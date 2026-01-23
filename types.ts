@@ -21,6 +21,7 @@ export interface Pairing {
 
 export interface Cocktail {
   id: string;
+  family: string; // New field for Fractal grouping
   name: string;
   description: string;
   image: string;

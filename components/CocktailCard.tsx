@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Cocktail } from '../types';
 import { Link } from 'react-router-dom';
+import { isFavorite, toggleFavorite } from '../utils/storage';
 
 export const CocktailCard: React.FC<{ cocktail: Cocktail }> = ({ cocktail }) => {
+  const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    setLiked(isFavorite(cocktail.id));
+  }, [cocktail.id]);
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigating to the recipe
+    e.stopPropagation();
+    const newState = toggleFavorite(cocktail.id);
+    setLiked(newState);
+    
+    // Dispatch custom event to update other components if needed
+    window.dispatchEvent(new Event('favorites-updated'));
+  };
+
   return (
     <Link to={`/recipe/${cocktail.id}`} className="block group w-full max-w-[400px]">
       <article className="bg-white rounded-3xl border-3 border-toon-border shadow-toon overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:-translate-y-2 group-hover:scale-[1.02] group-hover:shadow-toon-hover">
@@ -12,9 +29,14 @@ export const CocktailCard: React.FC<{ cocktail: Cocktail }> = ({ cocktail }) => 
             alt={cocktail.name} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
-          <div className="absolute top-4 right-4">
-            <button className="bg-white p-2 rounded-full border-2 border-toon-border shadow-sm hover:bg-red-50 transition-colors">
-              <span className="material-icons-round text-toon-primary text-xl">favorite</span>
+          <div className="absolute top-4 right-4 z-10">
+            <button 
+              onClick={handleLike}
+              className={`p-2 rounded-full border-2 border-toon-border shadow-sm transition-all active:scale-90 ${liked ? 'bg-toon-primary' : 'bg-white hover:bg-red-50'}`}
+            >
+              <span className={`material-icons-round text-xl ${liked ? 'text-white animate-heart-burst' : 'text-toon-primary'}`}>
+                {liked ? 'favorite' : 'favorite_border'}
+              </span>
             </button>
           </div>
           <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
@@ -32,10 +54,10 @@ export const CocktailCard: React.FC<{ cocktail: Cocktail }> = ({ cocktail }) => 
           </div>
           
           <div className="flex justify-between items-start mb-2">
-            <h3 className="font-display text-3xl text-toon-dark">{cocktail.name}</h3>
+            <h3 className="font-display text-3xl text-toon-dark leading-tight">{cocktail.name}</h3>
           </div>
           
-          <div className="flex items-center gap-4 text-sm font-semibold text-gray-500 mt-auto">
+          <div className="flex items-center gap-4 text-sm font-semibold text-gray-500 mt-auto pt-4">
             <div className="flex items-center gap-1">
               <span className="material-icons-round text-base">schedule</span>
               {cocktail.time}

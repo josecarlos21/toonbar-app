@@ -3,6 +3,7 @@ import { Routes, Route, HashRouter } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Recipe } from './pages/Recipe';
 import { Prepare } from './pages/Prepare';
+import { Favorites } from './pages/Favorites';
 import { NavBar } from './components/NavBar';
 
 const AppContent: React.FC = () => {
@@ -12,6 +13,12 @@ const AppContent: React.FC = () => {
         <Route path="/" element={
           <>
             <Home />
+            <NavBar />
+          </>
+        } />
+        <Route path="/favorites" element={
+          <>
+            <Favorites />
             <NavBar />
           </>
         } />
