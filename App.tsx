@@ -5,6 +5,7 @@ import { Recipe } from './pages/Recipe';
 import { Prepare } from './pages/Prepare';
 import { Favorites } from './pages/Favorites';
 import { NavBar } from './components/NavBar';
+import { AssetProvider } from './context/AssetContext';
 
 const AppContent: React.FC = () => {
   return (
@@ -31,8 +32,10 @@ const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <HashRouter>
-      <AppContent />
-    </HashRouter>
+    <AssetProvider>
+      <HashRouter>
+        <AppContent />
+      </HashRouter>
+    </AssetProvider>
   );
 }

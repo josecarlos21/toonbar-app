@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Cocktail } from '../types';
 import { Link } from 'react-router-dom';
 import { isFavorite, toggleFavorite } from '../utils/storage';
+import { SmartImage } from './SmartImage';
 
 export const CocktailCard: React.FC<{ cocktail: Cocktail }> = ({ cocktail }) => {
   const [liked, setLiked] = useState(false);
@@ -24,10 +25,11 @@ export const CocktailCard: React.FC<{ cocktail: Cocktail }> = ({ cocktail }) => 
     <Link to={`/recipe/${cocktail.id}`} className="block group w-full max-w-[400px]">
       <article className="bg-white rounded-3xl border-3 border-toon-border shadow-toon overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:-translate-y-2 group-hover:scale-[1.02] group-hover:shadow-toon-hover">
         <div className="relative h-64 overflow-hidden bg-gray-100">
-          <img 
+          <SmartImage 
             src={cocktail.image} 
             alt={cocktail.name} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            containerClassName="w-full h-full"
           />
           <div className="absolute top-4 right-4 z-10">
             <button 
@@ -39,7 +41,7 @@ export const CocktailCard: React.FC<{ cocktail: Cocktail }> = ({ cocktail }) => 
               </span>
             </button>
           </div>
-          <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+          <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
              {/* Gradient overlay for contrast if needed */}
           </div>
         </div>

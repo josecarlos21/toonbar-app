@@ -7,7 +7,7 @@ export const COCKTAILS: Cocktail[] = [
     family: 'Paloma Variations',
     name: 'Paloma Supreme',
     description: 'El cóctel mexicano por excelencia. Una explosión de frescura cítrica con el carácter del tequila y burbujas rosadas.',
-    image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1582260655272-4c22737f5cae?auto=format&fit=crop&w=800&q=80',
     tags: ['Trending', 'Refrescante', 'Tequila', 'Mexicano'],
     difficulty: 'Fácil',
     time: '5 min',
@@ -16,7 +16,7 @@ export const COCKTAILS: Cocktail[] = [
     pairing: {
       name: 'Guacamole',
       description: 'La grasa saludable del aguacate corta la acidez.',
-      image: 'https://images.unsplash.com/photo-1615887023516-9b6c50cf2c1c?auto=format&fit=crop&w=600&q=80'
+      image: 'https://images.unsplash.com/photo-1594910620614-c3e66041a943?auto=format&fit=crop&w=600&q=80'
     },
     ingredients: [
       { name: 'Tequila Blanco', amount: '60 ml', icon: 'local_drink', color: 'bg-blue-100' },
@@ -25,9 +25,9 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Sal Volcánica', amount: 'Pizca', icon: 'grain', color: 'bg-gray-100' }
     ],
     steps: [
-      { id: 1, title: 'Escarchado', description: 'Pasa lima por el borde y sumerge en sal.', image: 'https://images.unsplash.com/photo-1599021456807-25db0f974333?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-blue-200' },
-      { id: 2, title: 'Hielo & Base', description: 'Vaso lleno de hielo. Vierte tequila y lima.', image: 'https://images.unsplash.com/photo-1582260655272-4c22737f5cae?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-green-200' },
-      { id: 3, title: 'Burbujas', description: 'Top de refresco de toronja.', image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-pink-200' }
+      { id: 1, title: 'Escarchado', description: 'Pasa lima por el borde y sumerge en sal.', image: 'https://images.unsplash.com/photo-1599021456807-25db0f974333?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-blue-200' },
+      { id: 2, title: 'Hielo & Base', description: 'Vaso lleno de hielo. Vierte tequila y lima.', image: 'https://images.unsplash.com/photo-1582260655272-4c22737f5cae?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-green-200' },
+      { id: 3, title: 'Burbujas', description: 'Top de refresco de toronja.', image: 'https://images.unsplash.com/photo-1629249622387-a2267b2cb20f?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-pink-200' }
     ]
   },
   {
@@ -35,7 +35,7 @@ export const COCKTAILS: Cocktail[] = [
     family: 'Paloma Variations',
     name: 'Spicy Paloma',
     description: 'La hermana atrevida de la Paloma. Toronja asada y un toque de chile serrano.',
-    image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80', 
+    image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=80', 
     tags: ['Picante', 'Tequila'],
     difficulty: 'Medio',
     time: '7 min',
@@ -48,8 +48,8 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Soda', amount: 'Top', icon: 'bubble_chart', color: 'bg-blue-50' }
     ],
     steps: [
-       { id: 1, title: 'Muddle', description: 'Machaca el chile con agave.', image: 'https://images.unsplash.com/photo-1615887023516-9b6c50cf2c1c?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-red-100' },
-       { id: 2, title: 'Mix', description: 'Agrega mezcal y jugo. Agita.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-orange-100' }
+       { id: 1, title: 'Muddle', description: 'Machaca el chile con agave.', image: 'https://images.unsplash.com/photo-1563223842-83c31b0df2cb?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-red-100' },
+       { id: 2, title: 'Mix', description: 'Agrega mezcal y jugo. Agita.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-orange-100' }
     ]
   },
 
@@ -72,8 +72,8 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Jalapeño', amount: '2 u', icon: 'whatshot', color: 'bg-red-100' }
     ],
     steps: [
-      { id: 1, title: 'Borde', description: 'Escarcha con Tajín.', image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-red-200' },
-      { id: 2, title: 'Shake', description: 'Agita con hielo y jalapeño.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-yellow-200' }
+      { id: 1, title: 'Borde', description: 'Escarcha con Tajín.', image: 'https://images.unsplash.com/photo-1629249622387-a2267b2cb20f?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-red-200' },
+      { id: 2, title: 'Shake', description: 'Agita con hielo y jalapeño.', image: 'https://images.unsplash.com/photo-1594145000571-085e6dd35432?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-yellow-200' }
     ]
   },
   {
@@ -93,8 +93,8 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Jugo Lima', amount: '25 ml', icon: 'eco', color: 'bg-green-100' }
     ],
     steps: [
-       { id: 1, title: 'Shake', description: 'Agita vigorosamente.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-green-100' },
-       { id: 2, title: 'Serve', description: 'Sirve en copa escarchada.', image: 'https://images.unsplash.com/photo-1572911226784-0802c6326d9e?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-white' }
+       { id: 1, title: 'Shake', description: 'Agita vigorosamente.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-green-100' },
+       { id: 2, title: 'Serve', description: 'Sirve en copa escarchada.', image: 'https://images.unsplash.com/photo-1572911226784-0802c6326d9e?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-white' }
     ]
   },
   {
@@ -102,7 +102,7 @@ export const COCKTAILS: Cocktail[] = [
     family: 'Margarita World',
     name: 'Frozen Fresa',
     description: 'Como un granizado para adultos. Dulce, helado y peligroso.',
-    image: 'https://images.unsplash.com/photo-1623594611096-7f70b7495b46?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1606922817235-94304859a239?auto=format&fit=crop&w=800&q=80',
     tags: ['Verano', 'Frutal', 'Tequila'],
     difficulty: 'Fácil',
     time: '5 min',
@@ -114,7 +114,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Jarabe', amount: '30 ml', icon: 'water_drop', color: 'bg-gray-100' }
     ],
     steps: [
-       { id: 1, title: 'Blend', description: 'Licúa todo hasta punto de nieve.', image: 'https://images.unsplash.com/photo-1605218427339-a937a092fb25?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-red-200' }
+       { id: 1, title: 'Blend', description: 'Licúa todo hasta punto de nieve.', image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-red-200' }
     ]
   },
 
@@ -136,8 +136,8 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Pepino', amount: 'Tira', icon: 'horizontal_rule', color: 'bg-green-100' }
     ],
     steps: [
-      { id: 1, title: 'Hielo', description: 'Copa balón con mucho hielo.', image: 'https://images.unsplash.com/photo-1594451631405-b778465d3a01?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-blue-100' },
-      { id: 2, title: 'Servir', description: 'Gin y tónica suavemente.', image: 'https://images.unsplash.com/photo-1560526860-f33503c35b54?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-gray-100' }
+      { id: 1, title: 'Hielo', description: 'Copa balón con mucho hielo.', image: 'https://images.unsplash.com/photo-1594451631405-b778465d3a01?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-blue-100' },
+      { id: 2, title: 'Servir', description: 'Gin y tónica suavemente.', image: 'https://images.unsplash.com/photo-1560526860-f33503c35b54?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-gray-100' }
     ]
   },
   {
@@ -157,8 +157,8 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Campari', amount: '30 ml', icon: 'local_bar', color: 'bg-red-500 text-white' }
     ],
     steps: [
-      { id: 1, title: 'Build', description: 'Construye sobre hielo.', image: 'https://images.unsplash.com/photo-1536935338788-843bb52d3d08?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-red-200' },
-      { id: 2, title: 'Stir', description: 'Remueve para enfriar.', image: 'https://images.unsplash.com/photo-1551754655-427029071e65?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-orange-100' }
+      { id: 1, title: 'Build', description: 'Construye sobre hielo.', image: 'https://images.unsplash.com/photo-1536935338788-843bb52d3d08?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-red-200' },
+      { id: 2, title: 'Stir', description: 'Remueve para enfriar.', image: 'https://images.unsplash.com/photo-1551754655-427029071e65?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-orange-100' }
     ]
   },
   {
@@ -166,7 +166,7 @@ export const COCKTAILS: Cocktail[] = [
     family: 'Gin Bar',
     name: 'Tom Collins',
     description: 'Limonada con esteroides.',
-    image: 'https://images.unsplash.com/photo-1587888637140-849b13f3e1a3?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1599557088916-24cb1c356f9e?auto=format&fit=crop&w=800&q=80',
     tags: ['Refrescante', 'Gin'],
     difficulty: 'Fácil',
     time: '3 min',
@@ -178,7 +178,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Soda', amount: 'Top', icon: 'bubble_chart', color: 'bg-blue-100' }
     ],
     steps: [
-       { id: 1, title: 'Mix', description: 'Mezcla gin y limón.', image: 'https://images.unsplash.com/photo-1587888637140-849b13f3e1a3?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-yellow-50' }
+       { id: 1, title: 'Mix', description: 'Mezcla gin y limón.', image: 'https://images.unsplash.com/photo-1587888637140-849b13f3e1a3?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-yellow-50' }
     ]
   },
 
@@ -200,8 +200,8 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Lima', amount: 'Media', icon: 'eco', color: 'bg-green-200' }
     ],
     steps: [
-      { id: 1, title: 'Muddle', description: 'Machaca menta y lima.', image: 'https://images.unsplash.com/photo-1563223842-83c31b0df2cb?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-green-100' },
-      { id: 2, title: 'Mix', description: 'Añade ron y hielo picado.', image: 'https://images.unsplash.com/photo-1568284687572-c07a9b0c74be?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-gray-200' }
+      { id: 1, title: 'Muddle', description: 'Machaca menta y lima.', image: 'https://images.unsplash.com/photo-1563223842-83c31b0df2cb?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-green-100' },
+      { id: 2, title: 'Mix', description: 'Añade ron y hielo picado.', image: 'https://images.unsplash.com/photo-1568284687572-c07a9b0c74be?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-gray-200' }
     ]
   },
   {
@@ -221,7 +221,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Piña', amount: '120 ml', icon: 'local_bar', color: 'bg-yellow-200' }
     ],
     steps: [
-       { id: 1, title: 'Blend', description: 'Todo a la licuadora.', image: 'https://images.unsplash.com/photo-1605218427339-a937a092fb25?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-blue-100' }
+       { id: 1, title: 'Blend', description: 'Todo a la licuadora.', image: 'https://images.unsplash.com/photo-1605218427339-a937a092fb25?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-blue-100' }
     ]
   },
   {
@@ -240,7 +240,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Orgeat', amount: '15 ml', icon: 'grain', color: 'bg-yellow-50' }
     ],
     steps: [
-       { id: 1, title: 'Shake', description: 'Agita con hielo.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-orange-200' }
+       { id: 1, title: 'Shake', description: 'Agita con hielo.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-orange-200' }
     ]
   },
   {
@@ -259,7 +259,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Lima', amount: '30 ml', icon: 'eco', color: 'bg-green-100' }
     ],
     steps: [
-       { id: 1, title: 'Shake', description: 'Agita hasta congelar.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-green-100' }
+       { id: 1, title: 'Shake', description: 'Agita hasta congelar.', image: 'https://images.unsplash.com/photo-1618852305546-e762a45d045c?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-green-100' }
     ]
   },
 
@@ -280,7 +280,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Espresso', amount: '30 ml', icon: 'coffee', color: 'bg-yellow-900 text-white' }
     ],
     steps: [
-       { id: 1, title: 'Shake Hard', description: 'Agita muy fuerte para espuma.', image: 'https://images.unsplash.com/photo-1594145000571-085e6dd35432?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-orange-200' }
+       { id: 1, title: 'Shake Hard', description: 'Agita muy fuerte para espuma.', image: 'https://images.unsplash.com/photo-1594145000571-085e6dd35432?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-orange-200' }
     ]
   },
   {
@@ -299,7 +299,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Blue Curaçao', amount: '30 ml', icon: 'water_drop', color: 'bg-blue-100' }
     ],
     steps: [
-       { id: 1, title: 'Build', description: 'Directo al vaso con hielo.', image: 'https://images.unsplash.com/photo-1589669677025-a1c22501a4df?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-blue-200' }
+       { id: 1, title: 'Build', description: 'Directo al vaso con hielo.', image: 'https://images.unsplash.com/photo-1589669677025-a1c22501a4df?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-blue-200' }
     ]
   },
   {
@@ -318,7 +318,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Ginger Beer', amount: '120 ml', icon: 'sports_bar', color: 'bg-yellow-100' }
     ],
     steps: [
-       { id: 1, title: 'Build', description: 'En taza de cobre con hielo.', image: 'https://images.unsplash.com/photo-1530991037531-51f5568d3881?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-orange-200' }
+       { id: 1, title: 'Build', description: 'En taza de cobre con hielo.', image: 'https://images.unsplash.com/photo-1530991037531-51f5568d3881?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-orange-200' }
     ]
   },
   {
@@ -337,7 +337,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Arándano', amount: '30 ml', icon: 'water_drop', color: 'bg-red-800 text-white' }
     ],
     steps: [
-       { id: 1, title: 'Shake', description: 'Agita y cuela.', image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-red-100' }
+       { id: 1, title: 'Shake', description: 'Agita y cuela.', image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-red-100' }
     ]
   },
 
@@ -359,7 +359,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Bitters', amount: '3 dash', icon: 'opacity', color: 'bg-red-800 text-white' }
     ],
     steps: [
-       { id: 1, title: 'Stir', description: 'Diluye lentamente.', image: 'https://images.unsplash.com/photo-1598155523122-38423bb4d6c1?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-orange-200' }
+       { id: 1, title: 'Stir', description: 'Diluye lentamente.', image: 'https://images.unsplash.com/photo-1598155523122-38423bb4d6c1?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-orange-200' }
     ]
   },
   {
@@ -379,7 +379,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Clara', amount: '1 u', icon: 'egg', color: 'bg-white' }
     ],
     steps: [
-       { id: 1, title: 'Dry Shake', description: 'Sin hielo primero.', image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-gray-100' }
+       { id: 1, title: 'Dry Shake', description: 'Sin hielo primero.', image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-gray-100' }
     ]
   },
   // --- FAMILIA MEXICAN ---
@@ -399,7 +399,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Salsas', amount: 'Mix', icon: 'science', color: 'bg-black text-white' }
     ],
     steps: [
-       { id: 1, title: 'Rim', description: 'Chile y limón.', image: 'https://images.unsplash.com/photo-1536935338788-843bb52d3d08?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-red-200' }
+       { id: 1, title: 'Rim', description: 'Chile y limón.', image: 'https://images.unsplash.com/photo-1536935338788-843bb52d3d08?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-red-200' }
     ]
   },
   {
@@ -407,7 +407,7 @@ export const COCKTAILS: Cocktail[] = [
     family: 'Mexicanas',
     name: 'Charro Negro',
     description: 'Cuba libre a la mexicana.',
-    image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80',
     tags: ['Mexicano', 'Tequila'],
     difficulty: 'Fácil',
     time: '2 min',
@@ -418,7 +418,7 @@ export const COCKTAILS: Cocktail[] = [
       { name: 'Cola', amount: 'Top', icon: 'local_bar', color: 'bg-black text-white' }
     ],
     steps: [
-       { id: 1, title: 'Build', description: 'Vaso alto con hielo.', image: 'https://images.unsplash.com/photo-1625866164282-3d8819543df5?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-yellow-100' }
+       { id: 1, title: 'Build', description: 'Vaso alto con hielo.', image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-yellow-100' }
     ]
   },
   {
@@ -437,7 +437,7 @@ export const COCKTAILS: Cocktail[] = [
        { name: 'Aperol', amount: '60 ml', icon: 'local_bar', color: 'bg-orange-500 text-white' }
     ],
     steps: [
-       { id: 1, title: '3-2-1', description: '3 Prosecco, 2 Aperol, 1 Soda.', image: 'https://images.unsplash.com/photo-1560512823-8db965dfc5d4?auto=format&fit=crop&w=400&q=80', bgColor: 'bg-orange-200' }
+       { id: 1, title: '3-2-1', description: '3 Prosecco, 2 Aperol, 1 Soda.', image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=80', bgColor: 'bg-orange-200' }
     ]
   }
 ];

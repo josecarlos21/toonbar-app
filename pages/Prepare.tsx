@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { COCKTAILS } from '../constants';
 import { Button } from '../components/Button';
+import { SmartImage } from '../components/SmartImage';
 
 export const Prepare: React.FC = () => {
   const { id } = useParams();
@@ -93,10 +94,11 @@ export const Prepare: React.FC = () => {
           <div className="absolute inset-0 bg-white rounded-[3rem] border-4 border-toon-border transform rotate-3 transition-transform group-hover:rotate-6"></div>
           <div className="absolute inset-0 bg-toon-dark rounded-[3rem] border-4 border-toon-border transform -rotate-2 opacity-10"></div>
           <div className="relative w-full h-full rounded-[3rem] border-4 border-toon-border overflow-hidden shadow-toon bg-white">
-            <img 
+            <SmartImage 
               src={step.image} 
               alt={step.title} 
               className="w-full h-full object-cover animate-bounce-slight"
+              containerClassName="w-full h-full"
             />
           </div>
           

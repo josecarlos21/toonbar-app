@@ -4,6 +4,7 @@ import { COCKTAILS } from '../constants';
 import { Button } from '../components/Button';
 import { CocktailCard } from '../components/CocktailCard';
 import { isFavorite, toggleFavorite } from '../utils/storage';
+import { SmartImage } from '../components/SmartImage';
 
 export const Recipe: React.FC = () => {
   const { id } = useParams();
@@ -62,9 +63,14 @@ export const Recipe: React.FC = () => {
     <div className="min-h-screen bg-white pb-24 md:pb-32 animate-fade-in-up">
       <div className="md:flex md:items-start md:min-h-[60vh] max-w-7xl mx-auto">
         {/* Left: Hero Image Section */}
-        <div className="relative h-[50vh] w-full md:h-[600px] md:w-2/5 md:sticky md:top-0">
-          <img src={cocktail.image} alt={cocktail.name} className="w-full h-full object-cover md:rounded-br-[3rem] shadow-lg" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-white md:hidden"></div>
+        <div className="relative h-[50vh] w-full md:h-[600px] md:w-2/5 md:sticky md:top-0 bg-gray-100">
+          <SmartImage 
+            src={cocktail.image} 
+            alt={cocktail.name} 
+            className="w-full h-full object-cover md:rounded-br-[3rem] shadow-lg" 
+            containerClassName="w-full h-full md:rounded-br-[3rem]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-white md:hidden pointer-events-none"></div>
           
           {/* Navigation */}
           <div className="absolute top-6 left-4 right-4 flex justify-between items-start z-10">
@@ -167,13 +173,14 @@ export const Recipe: React.FC = () => {
               Maridaje Perfecto (Guak!)
             </h2>
             <div className="bg-white rounded-3xl border-3 border-toon-border shadow-toon overflow-hidden group md:flex transform transition-all hover:-translate-y-1 hover:shadow-toon-hover">
-              <div className="relative h-48 md:h-auto md:w-1/2 overflow-hidden">
-                <img 
+              <div className="relative h-48 md:h-auto md:w-1/2 overflow-hidden bg-gray-100">
+                <SmartImage 
                   src={cocktail.pairing.image} 
                   alt={cocktail.pairing.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  containerClassName="w-full h-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
                 <div className="absolute bottom-4 left-4">
                    <h3 className="font-display text-3xl text-white tracking-wide drop-shadow-md">{cocktail.pairing.name}</h3>
                 </div>
