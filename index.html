@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Toon Bar</title>
+    <title>Toon Bar - Fractal Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Bangers&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
@@ -29,24 +29,31 @@
             },
             boxShadow: {
               'toon': '4px 4px 0px 0px #1A1A1A',
-              'toon-hover': '6px 6px 0px 0px #1A1A1A',
-              'toon-active': '2px 2px 0px 0px #1A1A1A',
+              'toon-hover': '8px 8px 0px 0px #1A1A1A',
+              'toon-active': '0px 0px 0px 0px #1A1A1A',
+              'toon-sm': '2px 2px 0px 0px #1A1A1A',
             },
             borderWidth: {
               '3': '3px',
             },
             animation: {
               'bounce-slight': 'bounce-slight 2s infinite',
-              'pop-bounce': 'pop-bounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+              'pop-in': 'pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+              'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+              'expand': 'expand 0.5s ease-in-out forwards',
             },
             keyframes: {
               'bounce-slight': {
-                '0%, 100%': { transform: 'translateY(-2%)' },
+                '0%, 100%': { transform: 'translateY(-3%)' },
                 '50%': { transform: 'translateY(0)' },
               },
-              'pop-bounce': {
-                '0%': { transform: 'scale(0.8) translateY(10px)', opacity: '0' },
-                '100%': { transform: 'scale(1) translateY(0)', opacity: '1' }
+              'pop-in': {
+                '0%': { transform: 'scale(0.8)', opacity: '0' },
+                '100%': { transform: 'scale(1)', opacity: '1' }
+              },
+              'fade-in-up': {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' }
               }
             }
           },
@@ -58,14 +65,19 @@
       .no-scrollbar::-webkit-scrollbar { display: none; }
       /* Hide scrollbar for IE, Edge and Firefox */
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+      }
     </style>
 <script type="importmap">
 {
   "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3"
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0"
   }
 }
 </script>
@@ -74,14 +86,16 @@
     <div id="root"></div>
 
     <script type="text/babel" data-type="module" data-presets="typescript,react">
-      import React, { useState, useMemo } from 'https://esm.sh/react@18.2.0';
+      import React, { useState, useMemo, useEffect } from 'https://esm.sh/react@18.2.0';
       import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
       import { HashRouter, Routes, Route, Link, useParams, useNavigate, useLocation } from 'https://esm.sh/react-router-dom@6.28.0?deps=react@18.2.0,react-dom@18.2.0';
 
-      // --- CONSTANTS ---
+      // --- DATA ---
       const COCKTAILS = [
+        // --- FAMILIA PALOMA ---
         {
           id: 'paloma-supreme',
+          family: 'Paloma Variations',
           name: 'Paloma Supreme',
           description: 'El cóctel mexicano por excelencia. Una explosión de frescura cítrica con el carácter del tequila y burbujas rosadas.',
           image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
@@ -90,1024 +104,506 @@
           time: '5 min',
           rating: 4.9,
           likes: 1240,
-          pairing: {
-            name: 'Guacamole & Totopos',
-            description: 'La cremosidad del aguacate equilibra la acidez de la toronja.',
-            image: 'https://images.unsplash.com/photo-1615887023516-9b6c50cf2c1c?auto=format&fit=crop&w=600&q=80'
-          },
           ingredients: [
             { name: 'Tequila Blanco', amount: '60 ml', icon: 'local_drink', color: 'bg-blue-100' },
             { name: 'Jugo de Lima', amount: '15 ml', icon: 'eco', color: 'bg-green-100' },
             { name: 'Refresco Toronja', amount: 'Top', icon: 'bubble_chart', color: 'bg-pink-100' },
-            { name: 'Sal Volcánica', amount: 'Pizca', icon: 'grain', color: 'bg-gray-100' },
-            { name: 'Rodaja Toronja', amount: '1 u', icon: 'circle', color: 'bg-orange-100' }
+            { name: 'Sal Volcánica', amount: 'Pizca', icon: 'grain', color: 'bg-gray-100' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'Escarchado',
-              description: 'Pasa una rodaja de lima por el borde del vaso y sumérgelo en sal.',
-              image: 'https://images.unsplash.com/photo-1599021456807-25db0f974333?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-200'
-            },
-            {
-              id: 2,
-              title: 'Hielo & Base',
-              description: 'Llena el vaso con hielo hasta arriba. Vierte el Tequila y el jugo de lima.',
-              image: 'https://images.unsplash.com/photo-1582260655272-4c22737f5cae?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-200'
-            },
-            {
-              id: 3,
-              title: 'Burbujas',
-              description: 'Completa con refresco de toronja hasta el tope. ¡Mira esa espuma!',
-              image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-pink-200'
-            },
-            {
-              id: 4,
-              title: 'El Toque Final',
-              description: 'Decora con una media luna de toronja fresca. ¡Salud!',
-              image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-200'
-            }
+            { id: 1, title: 'Escarchado', description: 'Pasa lima por el borde y sumerge en sal.', image: 'https://images.unsplash.com/photo-1599021456807-25db0f974333?w=600', bgColor: 'bg-blue-200' },
+            { id: 2, title: 'Hielo & Base', description: 'Vaso lleno de hielo. Vierte tequila y lima.', image: 'https://images.unsplash.com/photo-1582260655272-4c22737f5cae?w=600', bgColor: 'bg-green-200' },
+            { id: 3, title: 'Burbujas', description: 'Top de refresco de toronja.', image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600', bgColor: 'bg-pink-200' }
           ]
         },
         {
-          id: 'blue-lagoon',
-          name: 'Blue Lagoon',
-          description: 'Un viaje directo a los años 80. Azul eléctrico, dulce y perfecto para la piscina. Una limonada para adultos con estilo.',
-          image: 'https://images.unsplash.com/photo-1582106245687-cbb466a9f07f?w=800',
-          tags: ['Verano', 'Dulce', 'Vodka'],
-          difficulty: 'Fácil',
-          time: '3 min',
-          rating: 4.5,
-          likes: 850,
-          pairing: {
-            name: 'Aros de Cebolla',
-            description: 'El crujiente salado perfecto para cortar el dulzor del Curaçao.',
-            image: 'https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=600&q=80'
-          },
+          id: 'paloma-spicy',
+          family: 'Paloma Variations',
+          name: 'Spicy Paloma',
+          description: 'La hermana atrevida de la Paloma. Toronja asada y un toque de chile serrano.',
+          image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=800', 
+          tags: ['Picante', 'Tequila'],
+          difficulty: 'Medio',
+          time: '7 min',
+          rating: 4.7,
+          likes: 800,
           ingredients: [
-            { name: 'Vodka', amount: '45 ml', icon: 'local_drink', color: 'bg-gray-100' },
-            { name: 'Blue Curaçao', amount: '30 ml', icon: 'water_drop', color: 'bg-blue-100' },
-            { name: 'Limonada', amount: 'Top', icon: 'lemonade', color: 'bg-yellow-100' },
-            { name: 'Hielo Picado', amount: 'Mucho', icon: 'ac_unit', color: 'bg-cyan-100' },
-            { name: 'Cereza', amount: '1 u', icon: 'circle', color: 'bg-red-100' }
+            { name: 'Mezcal', amount: '45 ml', icon: 'local_fire_department', color: 'bg-orange-100' },
+            { name: 'Jugo Toronja', amount: '60 ml', icon: 'water_drop', color: 'bg-pink-100' },
+            { name: 'Rodaja Chile', amount: '2 u', icon: 'whatshot', color: 'bg-red-100' },
+            { name: 'Soda', amount: 'Top', icon: 'bubble_chart', color: 'bg-blue-50' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'Base Helada',
-              description: 'Llena un vaso alto con mucho hielo picado. ¡Que esté bien frío!',
-              image: 'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-cyan-200'
-            },
-            {
-              id: 2,
-              title: 'La Mezcla',
-              description: 'Vierte el Vodka y el Blue Curaçao sobre el hielo. Mira ese color azul.',
-              image: 'https://images.unsplash.com/photo-1589669677025-a1c22501a4df?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-200'
-            },
-            {
-              id: 3,
-              title: 'Top Cítrico',
-              description: 'Rellena con limonada hasta el borde y remueve suavemente.',
-              image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-200'
-            }
+             { id: 1, title: 'Muddle', description: 'Machaca el chile con agave.', image: 'https://images.unsplash.com/photo-1599021456807-25db0f974333?w=600', bgColor: 'bg-red-100' },
+             { id: 2, title: 'Mix', description: 'Agrega mezcal y jugo. Agita.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600', bgColor: 'bg-orange-100' }
           ]
         },
+
+        // --- FAMILIA MARGARITA ---
         {
           id: 'spicy-margarita',
+          family: 'Margarita World',
           name: 'Spicy Margarita',
-          description: 'El clásico reinventado con un toque de jalapeño que despierta los sentidos. Picante, ácido y adictivo.',
+          description: 'El clásico reinventado con un toque de jalapeño que despierta los sentidos.',
           image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=800',
           tags: ['Picante', 'Clásico', 'Tequila', 'Mexicano'],
           difficulty: 'Medio',
           time: '7 min',
           rating: 4.8,
           likes: 920,
-          pairing: {
-            name: 'Tacos al Pastor',
-            description: 'El picante del cóctel realza las especias de la carne.',
-            image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80'
-          },
           ingredients: [
             { name: 'Tequila Reposado', amount: '60 ml', icon: 'local_drink', color: 'bg-orange-100' },
             { name: 'Triple Sec', amount: '30 ml', icon: 'liquor', color: 'bg-yellow-100' },
             { name: 'Jugo de Lima', amount: '30 ml', icon: 'eco', color: 'bg-green-100' },
-            { name: 'Rodajas Jalapeño', amount: '2 u', icon: 'whatshot', color: 'bg-red-100' },
-            { name: 'Tajín', amount: 'Borde', icon: 'grain', color: 'bg-red-200' }
+            { name: 'Jalapeño', amount: '2 u', icon: 'whatshot', color: 'bg-red-100' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'Borde Picante',
-              description: 'Frota lima en el borde y escarcha con Tajín para ese toque picoso.',
-              image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-red-200'
-            },
-            {
-              id: 2,
-              title: 'Macerado',
-              description: 'En el shaker, machaca suavemente las rodajas de jalapeño con el jugo de lima.',
-              image: 'https://images.unsplash.com/photo-1599021456807-25db0f974333?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-200'
-            },
-            {
-              id: 3,
-              title: 'Shake It!',
-              description: 'Añade hielo, tequila y triple sec. ¡Agita con mucha fuerza por 15 segundos!',
-              image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-200'
-            },
-            {
-              id: 4,
-              title: 'Servido',
-              description: 'Cuela sobre un vaso con hielo fresco. ¡Disfruta el fuego!',
-              image: 'https://images.unsplash.com/photo-1572911226784-0802c6326d9e?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-200'
-            }
+            { id: 1, title: 'Borde', description: 'Escarcha con Tajín.', image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600', bgColor: 'bg-red-200' },
+            { id: 2, title: 'Shake', description: 'Agita con hielo y jalapeño.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600', bgColor: 'bg-yellow-200' }
           ]
         },
         {
+          id: 'margarita-clasica',
+          family: 'Margarita World',
+          name: 'Margarita Clásica',
+          description: 'La receta original de 1948. Equilibrio perfecto entre dulce, ácido y salado.',
+          image: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800',
+          tags: ['Clásico', 'Tequila'],
+          difficulty: 'Fácil',
+          time: '5 min',
+          rating: 4.9,
+          likes: 2100,
+          ingredients: [
+            { name: 'Tequila Blanco', amount: '50 ml', icon: 'local_drink', color: 'bg-blue-50' },
+            { name: 'Cointreau', amount: '25 ml', icon: 'liquor', color: 'bg-orange-100' },
+            { name: 'Jugo Lima', amount: '25 ml', icon: 'eco', color: 'bg-green-100' }
+          ],
+          steps: [
+             { id: 1, title: 'Shake', description: 'Agita vigorosamente.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600', bgColor: 'bg-green-100' },
+             { id: 2, title: 'Serve', description: 'Sirve en copa escarchada.', image: 'https://images.unsplash.com/photo-1572911226784-0802c6326d9e?w=600', bgColor: 'bg-white' }
+          ]
+        },
+        {
+          id: 'margarita-fresa',
+          family: 'Margarita World',
+          name: 'Frozen Fresa',
+          description: 'Como un granizado para adultos. Dulce, helado y peligroso.',
+          image: 'https://images.unsplash.com/photo-1623594611096-7f70b7495b46?w=800',
+          tags: ['Verano', 'Frutal', 'Tequila'],
+          difficulty: 'Fácil',
+          time: '5 min',
+          rating: 4.6,
+          likes: 1500,
+          ingredients: [
+            { name: 'Tequila', amount: '60 ml', icon: 'local_drink', color: 'bg-blue-50' },
+            { name: 'Fresas Congeladas', amount: '1 taza', icon: 'ac_unit', color: 'bg-red-100' },
+            { name: 'Jarabe', amount: '30 ml', icon: 'water_drop', color: 'bg-gray-100' }
+          ],
+          steps: [
+             { id: 1, title: 'Blend', description: 'Licúa todo hasta punto de nieve.', image: 'https://images.unsplash.com/photo-1605218427339-a937a092fb25?w=600', bgColor: 'bg-red-200' }
+          ]
+        },
+
+        // --- FAMILIA GIN & TONIC ---
+        {
+          id: 'gin-tonic-botanico',
+          family: 'Gin Bar',
+          name: 'Gin Tonic Botánico',
+          description: 'Limpio, crujiente y aromático.',
+          image: 'https://images.unsplash.com/photo-1560526860-f33503c35b54?w=800',
+          tags: ['Clásico', 'Refrescante', 'Gin'],
+          difficulty: 'Fácil',
+          time: '3 min',
+          rating: 4.6,
+          likes: 1450,
+          ingredients: [
+            { name: 'Gin', amount: '60 ml', icon: 'local_drink', color: 'bg-blue-50' },
+            { name: 'Tónica', amount: '120 ml', icon: 'bubble_chart', color: 'bg-gray-50' },
+            { name: 'Pepino', amount: 'Tira', icon: 'horizontal_rule', color: 'bg-green-100' }
+          ],
+          steps: [
+            { id: 1, title: 'Hielo', description: 'Copa balón con mucho hielo.', image: 'https://images.unsplash.com/photo-1594451631405-b778465d3a01?w=600', bgColor: 'bg-blue-100' },
+            { id: 2, title: 'Servir', description: 'Gin y tónica suavemente.', image: 'https://images.unsplash.com/photo-1560526860-f33503c35b54?w=600', bgColor: 'bg-gray-100' }
+          ]
+        },
+        {
+          id: 'negroni',
+          family: 'Gin Bar',
+          name: 'Negroni',
+          description: 'El rey de los aperitivos. Amargo, dulce y fuerte.',
+          image: 'https://images.unsplash.com/photo-1551754655-427029071e65?w=800',
+          tags: ['Clásico', 'Aperitivo', 'Gin'],
+          difficulty: 'Fácil',
+          time: '4 min',
+          rating: 4.8,
+          likes: 1800,
+          ingredients: [
+            { name: 'Gin', amount: '30 ml', icon: 'local_drink', color: 'bg-blue-50' },
+            { name: 'Vermut Rojo', amount: '30 ml', icon: 'wine_bar', color: 'bg-red-900 text-white' },
+            { name: 'Campari', amount: '30 ml', icon: 'local_bar', color: 'bg-red-500 text-white' }
+          ],
+          steps: [
+            { id: 1, title: 'Build', description: 'Construye sobre hielo.', image: 'https://images.unsplash.com/photo-1536935338788-843bb52d3d08?w=600', bgColor: 'bg-red-200' },
+            { id: 2, title: 'Stir', description: 'Remueve para enfriar.', image: 'https://images.unsplash.com/photo-1551754655-427029071e65?w=600', bgColor: 'bg-orange-100' }
+          ]
+        },
+        {
+          id: 'tom-collins',
+          family: 'Gin Bar',
+          name: 'Tom Collins',
+          description: 'Limonada con esteroides.',
+          image: 'https://images.unsplash.com/photo-1587888637140-849b13f3e1a3?w=800',
+          tags: ['Refrescante', 'Gin'],
+          difficulty: 'Fácil',
+          time: '3 min',
+          rating: 4.5,
+          likes: 1250,
+          ingredients: [
+            { name: 'Gin', amount: '60 ml', icon: 'local_drink', color: 'bg-blue-50' },
+            { name: 'Limón', amount: '30 ml', icon: 'eco', color: 'bg-yellow-100' },
+            { name: 'Soda', amount: 'Top', icon: 'bubble_chart', color: 'bg-blue-100' }
+          ],
+          steps: [
+             { id: 1, title: 'Mix', description: 'Mezcla gin y limón.', image: 'https://images.unsplash.com/photo-1587888637140-849b13f3e1a3?w=600', bgColor: 'bg-yellow-50' }
+          ]
+        },
+
+        // --- FAMILIA TROPICAL ---
+        {
           id: 'mojito-cubano',
+          family: 'Tropical Vibes',
           name: 'Mojito Clásico',
-          description: 'Directo desde La Habana. Menta fresca, azúcar y ron en perfecta armonía. El rey del verano.',
-          image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80',
+          description: 'Menta fresca, azúcar y ron en perfecta armonía.',
+          image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=800',
           tags: ['Clásico', 'Refrescante', 'Ron'],
           difficulty: 'Medio',
           time: '8 min',
           rating: 4.7,
           likes: 1500,
-          pairing: {
-            name: 'Tostones Cubanos',
-            description: 'Plátano frito crujiente para acompañar la frescura de la menta.',
-            image: 'https://images.unsplash.com/photo-1627376629924-d232537b018e?auto=format&fit=crop&w=600&q=80'
-          },
           ingredients: [
             { name: 'Ron Blanco', amount: '60 ml', icon: 'local_drink', color: 'bg-gray-100' },
-            { name: 'Hojas de Menta', amount: '10 u', icon: 'grass', color: 'bg-green-100' },
-            { name: 'Azúcar Blanca', amount: '2 cdtas', icon: 'view_comfy', color: 'bg-white' },
-            { name: 'Lima', amount: 'Media', icon: 'eco', color: 'bg-green-200' },
-            { name: 'Soda', amount: 'Top', icon: 'bubble_chart', color: 'bg-blue-100' }
+            { name: 'Menta', amount: '10 u', icon: 'grass', color: 'bg-green-100' },
+            { name: 'Lima', amount: 'Media', icon: 'eco', color: 'bg-green-200' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'Activa la Menta',
-              description: 'Coloca menta, azúcar y lima en el vaso. Presiona suavemente sin romper las hojas.',
-              image: 'https://images.unsplash.com/photo-1563223842-83c31b0df2cb?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-100'
-            },
-            {
-              id: 2,
-              title: 'El Espíritu',
-              description: 'Añade el Ron Blanco y llena el vaso hasta la mitad con hielo picado.',
-              image: 'https://images.unsplash.com/photo-1568284687572-c07a9b0c74be?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-200'
-            },
-            {
-              id: 3,
-              title: 'Remover',
-              description: 'Mezcla bien para disolver el azúcar y levantar la menta del fondo.',
-              image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-200'
-            },
-            {
-              id: 4,
-              title: 'Final Fizz',
-              description: 'Tope de soda y decora con un cogollo de menta sano. ¡Golpéalo para liberar aroma!',
-              image: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-100'
-            }
+            { id: 1, title: 'Muddle', description: 'Machaca menta y lima.', image: 'https://images.unsplash.com/photo-1563223842-83c31b0df2cb?w=600', bgColor: 'bg-green-100' },
+            { id: 2, title: 'Mix', description: 'Añade ron y hielo picado.', image: 'https://images.unsplash.com/photo-1568284687572-c07a9b0c74be?w=600', bgColor: 'bg-gray-200' }
           ]
         },
         {
+          id: 'pina-colada',
+          family: 'Tropical Vibes',
+          name: 'Piña Colada',
+          description: 'Si te gusta que te pille la lluvia...',
+          image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?w=800',
+          tags: ['Verano', 'Ron'],
+          difficulty: 'Fácil',
+          time: '5 min',
+          rating: 4.9,
+          likes: 2300,
+          ingredients: [
+            { name: 'Ron Blanco', amount: '60 ml', icon: 'local_drink', color: 'bg-gray-100' },
+            { name: 'Coco', amount: '60 ml', icon: 'egg', color: 'bg-white' },
+            { name: 'Piña', amount: '120 ml', icon: 'local_bar', color: 'bg-yellow-200' }
+          ],
+          steps: [
+             { id: 1, title: 'Blend', description: 'Todo a la licuadora.', image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600', bgColor: 'bg-blue-100' }
+          ]
+        },
+        {
+          id: 'mai-tai',
+          family: 'Tropical Vibes',
+          name: 'Mai Tai',
+          description: 'El rey de los cócteles Tiki.',
+          image: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=800',
+          tags: ['Tropical', 'Ron'],
+          difficulty: 'Medio',
+          time: '6 min',
+          rating: 4.6,
+          likes: 1400,
+          ingredients: [
+            { name: 'Rones', amount: '60 ml', icon: 'local_drink', color: 'bg-orange-900 text-white' },
+            { name: 'Orgeat', amount: '15 ml', icon: 'grain', color: 'bg-yellow-50' }
+          ],
+          steps: [
+             { id: 1, title: 'Shake', description: 'Agita con hielo.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600', bgColor: 'bg-orange-200' }
+          ]
+        },
+        {
+          id: 'daiquiri',
+          family: 'Tropical Vibes',
+          name: 'Daiquiri',
+          description: 'La trinidad del ron: ron, lima y azúcar.',
+          image: 'https://images.unsplash.com/photo-1618852305546-e762a45d045c?w=800',
+          tags: ['Clásico', 'Ron'],
+          difficulty: 'Fácil',
+          time: '5 min',
+          rating: 4.7,
+          likes: 1650,
+          ingredients: [
+            { name: 'Ron Blanco', amount: '60 ml', icon: 'local_drink', color: 'bg-gray-100' },
+            { name: 'Lima', amount: '30 ml', icon: 'eco', color: 'bg-green-100' }
+          ],
+          steps: [
+             { id: 1, title: 'Shake', description: 'Agita hasta congelar.', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600', bgColor: 'bg-green-100' }
+          ]
+        },
+
+        // --- FAMILIA VODKA LOUNGE ---
+        {
           id: 'espresso-martini',
+          family: 'Vodka Lounge',
           name: 'Espresso Martini',
-          description: 'Para despertarse y celebrar. Sofisticado, cremoso y con el punch de cafeína que necesitas.',
+          description: 'Despiértate y celebra.',
           image: 'https://images.unsplash.com/photo-1545438102-799c3991ffb2?w=800',
           tags: ['Energético', 'Elegante', 'Vodka'],
           difficulty: 'Difícil',
           time: '6 min',
           rating: 5.0,
           likes: 2100,
-          pairing: {
-            name: 'Trufas de Chocolate',
-            description: 'El chocolate amargo complementa perfectamente las notas de café.',
-            image: 'https://images.unsplash.com/photo-1548685123-6b3a2412b184?auto=format&fit=crop&w=600&q=80'
-          },
           ingredients: [
             { name: 'Vodka', amount: '50 ml', icon: 'local_drink', color: 'bg-gray-100' },
-            { name: 'Licor de Café', amount: '30 ml', icon: 'coffee', color: 'bg-yellow-800 text-white' },
-            { name: 'Espresso', amount: '30 ml', icon: 'coffee_maker', color: 'bg-yellow-900 text-white' },
-            { name: 'Granos Café', amount: '3 u', icon: 'grain', color: 'bg-brown-500' },
-            { name: 'Jarabe Simple', amount: 'Opcional', icon: 'water_drop', color: 'bg-gray-200' }
+            { name: 'Espresso', amount: '30 ml', icon: 'coffee', color: 'bg-yellow-900 text-white' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'Prepara el Café',
-              description: 'Prepara un espresso fuerte y déjalo enfriar un poco. ¡La calidad importa!',
-              image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-200'
-            },
-            {
-              id: 2,
-              title: 'Carga el Shaker',
-              description: 'Hielo abundante, vodka, licor de café y el espresso.',
-              image: 'https://images.unsplash.com/photo-1629247656360-63c200540d58?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-300'
-            },
-            {
-              id: 3,
-              title: 'Shake Hard!',
-              description: 'Agita muy fuerte para crear la espuma característica. ¡Dale con energía!',
-              image: 'https://images.unsplash.com/photo-1594145000571-085e6dd35432?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-200'
-            },
-            {
-              id: 4,
-              title: 'La Trinidad',
-              description: 'Sirve en copa coupé y decora con 3 granos de café formando un trébol.',
-              image: 'https://images.unsplash.com/photo-1623908862973-772c918eb988?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-200'
-            }
+             { id: 1, title: 'Shake Hard', description: 'Agita muy fuerte para espuma.', image: 'https://images.unsplash.com/photo-1594145000571-085e6dd35432?w=600', bgColor: 'bg-orange-200' }
           ]
         },
         {
-          id: 'aperol-spritz',
-          name: 'Aperol Spritz',
-          description: 'El atardecer italiano en una copa. Naranja brillante, burbujas y "dolce far niente".',
-          image: 'https://images.unsplash.com/photo-1560512823-8db965dfc5d4?auto=format&fit=crop&w=800&q=80',
-          tags: ['Aperitivo', 'Burbujas', 'Vino'],
+          id: 'blue-lagoon',
+          family: 'Vodka Lounge',
+          name: 'Blue Lagoon',
+          description: 'Azul eléctrico de los 80s.',
+          image: 'https://images.unsplash.com/photo-1582106245687-cbb466a9f07f?w=800',
+          tags: ['Verano', 'Dulce', 'Vodka'],
           difficulty: 'Fácil',
           time: '3 min',
-          rating: 4.6,
-          likes: 1800,
-          pairing: {
-            name: 'Bruschetta de Tomate',
-            description: 'Sabores mediterráneos frescos para un aperitivo ligero.',
-            image: 'https://images.unsplash.com/photo-1572695157369-a14acdc74618?auto=format&fit=crop&w=600&q=80'
-          },
+          rating: 4.5,
+          likes: 850,
           ingredients: [
-            { name: 'Prosecco', amount: '90 ml', icon: 'celebration', color: 'bg-yellow-100' },
-            { name: 'Aperol', amount: '60 ml', icon: 'local_bar', color: 'bg-orange-500 text-white' },
-            { name: 'Soda', amount: '30 ml', icon: 'water', color: 'bg-blue-50' },
-            { name: 'Rodaja Naranja', amount: '1 u', icon: 'circle', color: 'bg-orange-200' },
-            { name: 'Hielo', amount: 'Copa Llen', icon: 'ac_unit', color: 'bg-gray-100' }
+            { name: 'Vodka', amount: '45 ml', icon: 'local_drink', color: 'bg-gray-100' },
+            { name: 'Blue Curaçao', amount: '30 ml', icon: 'water_drop', color: 'bg-blue-100' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'Copa Grande',
-              description: 'Usa una copa de vino grande y llénala de hielo hasta arriba.',
-              image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-100'
-            },
-            {
-              id: 2,
-              title: '3-2-1',
-              description: 'La regla de oro: 3 partes de Prosecco, 2 de Aperol, 1 de Soda.',
-              image: 'https://images.unsplash.com/photo-1560512823-8db965dfc5d4?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-200'
-            },
-            {
-              id: 3,
-              title: 'Toque Final',
-              description: 'Añade la rodaja de naranja. No hace falta remover mucho.',
-              image: 'https://images.unsplash.com/photo-1588645068809-7756778f7739?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-100'
-            }
+             { id: 1, title: 'Build', description: 'Directo al vaso con hielo.', image: 'https://images.unsplash.com/photo-1589669677025-a1c22501a4df?w=600', bgColor: 'bg-blue-200' }
           ]
         },
         {
-          id: 'pina-colada',
-          name: 'Piña Colada',
-          description: 'La reina del trópico. Cremosa, dulce y llena de sabor a vacaciones.',
-          image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=800&q=80',
-          tags: ['Verano', 'Tropical', 'Ron'],
+          id: 'moscow-mule',
+          family: 'Vodka Lounge',
+          name: 'Moscow Mule',
+          description: 'Picante y refrescante en cobre.',
+          image: 'https://images.unsplash.com/photo-1530991037531-51f5568d3881?w=800',
+          tags: ['Populares', 'Vodka'],
           difficulty: 'Fácil',
-          time: '5 min',
-          rating: 4.9,
-          likes: 2300,
-          pairing: {
-            name: 'Camarones al Coco',
-            description: 'El sabor tropical del coco une el plato con la bebida.',
-            image: 'https://images.unsplash.com/photo-1625938145744-e38051541d1c?auto=format&fit=crop&w=600&q=80'
-          },
+          time: '4 min',
+          rating: 4.7,
+          likes: 1600,
           ingredients: [
-            { name: 'Ron Blanco', amount: '60 ml', icon: 'local_drink', color: 'bg-gray-100' },
-            { name: 'Crema de Coco', amount: '60 ml', icon: 'egg', color: 'bg-white' },
-            { name: 'Jugo de Piña', amount: '120 ml', icon: 'local_bar', color: 'bg-yellow-200' },
-            { name: 'Hielo', amount: '1 Taza', icon: 'ac_unit', color: 'bg-cyan-50' },
-            { name: 'Triángulo Piña', amount: '1 u', icon: 'change_history', color: 'bg-yellow-400' }
+            { name: 'Vodka', amount: '60 ml', icon: 'local_drink', color: 'bg-gray-100' },
+            { name: 'Ginger Beer', amount: '120 ml', icon: 'sports_bar', color: 'bg-yellow-100' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'A la Licuadora',
-              description: 'Añade el hielo, el ron, la crema de coco y el jugo de piña en la licuadora.',
-              image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-100'
-            },
-            {
-              id: 2,
-              title: 'Frosty Mix',
-              description: 'Licúa a alta velocidad hasta obtener una textura suave y granizada.',
-              image: 'https://images.unsplash.com/photo-1605218427339-a937a092fb25?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-100'
-            },
-            {
-              id: 3,
-              title: 'Servir',
-              description: 'Sirve en una copa huracán o una piña ahuecada para más estilo.',
-              image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-100'
-            }
+             { id: 1, title: 'Build', description: 'En taza de cobre con hielo.', image: 'https://images.unsplash.com/photo-1530991037531-51f5568d3881?w=600', bgColor: 'bg-orange-200' }
           ]
         },
+        {
+          id: 'cosmopolitan',
+          family: 'Vodka Lounge',
+          name: 'Cosmopolitan',
+          description: 'Icono de estilo rosa.',
+          image: 'https://images.unsplash.com/photo-1560963689-02e82e7a9e26?w=800',
+          tags: ['Elegante', 'Vodka'],
+          difficulty: 'Medio',
+          time: '5 min',
+          rating: 4.6,
+          likes: 1900,
+          ingredients: [
+            { name: 'Vodka', amount: '45 ml', icon: 'local_drink', color: 'bg-gray-100' },
+            { name: 'Arándano', amount: '30 ml', icon: 'water_drop', color: 'bg-red-800 text-white' }
+          ],
+          steps: [
+             { id: 1, title: 'Shake', description: 'Agita y cuela.', image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?w=600', bgColor: 'bg-red-100' }
+          ]
+        },
+
+        // --- FAMILIA CLASSICS ---
         {
           id: 'old-fashioned',
+          family: 'Old School',
           name: 'Old Fashioned',
-          description: 'El padre de todos los cócteles. Whiskey, azúcar y bitters. Nada más, nada menos.',
-          image: 'https://images.unsplash.com/photo-1598155523122-38423bb4d6c1?auto=format&fit=crop&w=800&q=80',
+          description: 'El padre de todos los cócteles.',
+          image: 'https://images.unsplash.com/photo-1598155523122-38423bb4d6c1?w=800',
           tags: ['Clásico', 'Fuerte', 'Whiskey'],
           difficulty: 'Difícil',
           time: '6 min',
           rating: 4.8,
           likes: 1950,
-          pairing: {
-            name: 'Chocolate Amargo',
-            description: 'El cacao puro resalta las notas de roble del whiskey.',
-            image: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=600&q=80'
-          },
           ingredients: [
-            { name: 'Bourbon Whiskey', amount: '60 ml', icon: 'local_bar', color: 'bg-orange-200' },
-            { name: 'Terrón Azúcar', amount: '1 u', icon: 'crop_square', color: 'bg-white' },
-            { name: 'Angostura Bitters', amount: '3 dash', icon: 'opacity', color: 'bg-red-800 text-white' },
-            { name: 'Agua', amount: 'Splash', icon: 'water_drop', color: 'bg-blue-50' },
-            { name: 'Piel Naranja', amount: '1 u', icon: 'gesture', color: 'bg-orange-500 text-white' }
+            { name: 'Bourbon', amount: '60 ml', icon: 'local_bar', color: 'bg-orange-200' },
+            { name: 'Azúcar', amount: '1 u', icon: 'crop_square', color: 'bg-white' },
+            { name: 'Bitters', amount: '3 dash', icon: 'opacity', color: 'bg-red-800 text-white' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'La Base',
-              description: 'Coloca el terrón de azúcar en el vaso y empápalo con los bitters y el agua.',
-              image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-200'
-            },
-            {
-              id: 2,
-              title: 'Disolver',
-              description: 'Machaca el azúcar hasta que esté casi disuelto formando una pasta.',
-              image: 'https://images.unsplash.com/photo-1619427961268-c13f6494119e?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-100'
-            },
-            {
-              id: 3,
-              title: 'Construir',
-              description: 'Añade un hielo grande y el whiskey. Remueve suavemente por 30 segundos.',
-              image: 'https://images.unsplash.com/photo-1598155523122-38423bb4d6c1?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-200'
-            },
-            {
-              id: 4,
-              title: 'Perfumar',
-              description: 'Exprime los aceites de la piel de naranja sobre el vaso y déjala caer dentro.',
-              image: 'https://images.unsplash.com/photo-1629247372207-6b07c2343209?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-100'
-            }
-          ]
-        },
-        {
-          id: 'moscow-mule',
-          name: 'Moscow Mule',
-          description: 'Servido en su icónica taza de cobre. Picante por el jengibre y muy refrescante.',
-          image: 'https://images.unsplash.com/photo-1530991037531-51f5568d3881?auto=format&fit=crop&w=800&q=80',
-          tags: ['Populares', 'Picante', 'Vodka'],
-          difficulty: 'Fácil',
-          time: '4 min',
-          rating: 4.7,
-          likes: 1600,
-          pairing: {
-            name: 'Mini Sliders',
-            description: 'Hamburguesas pequeñas van genial con el frescor del jengibre.',
-            image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80'
-          },
-          ingredients: [
-            { name: 'Vodka', amount: '60 ml', icon: 'local_drink', color: 'bg-gray-100' },
-            { name: 'Ginger Beer', amount: '120 ml', icon: 'sports_bar', color: 'bg-yellow-100' },
-            { name: 'Jugo de Lima', amount: '15 ml', icon: 'eco', color: 'bg-green-100' },
-            { name: 'Hielo', amount: 'Picado', icon: 'ac_unit', color: 'bg-cyan-50' },
-            { name: 'Lima', amount: 'Rodaja', icon: 'circle', color: 'bg-green-200' }
-          ],
-          steps: [
-            {
-              id: 1,
-              title: 'Taza de Cobre',
-              description: 'Usa una taza de cobre para mantener el frío. Llénala de hielo.',
-              image: 'https://images.unsplash.com/photo-1530991037531-51f5568d3881?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-200'
-            },
-            {
-              id: 2,
-              title: 'Ácido & Fuerte',
-              description: 'Vierte el vodka y el jugo de lima fresco sobre el hielo.',
-              image: 'https://images.unsplash.com/photo-1629247926958-3932b785d033?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-100'
-            },
-            {
-              id: 3,
-              title: 'El Jengibre',
-              description: 'Completa con Ginger Beer. Deja espacio para decorar.',
-              image: 'https://images.unsplash.com/photo-1625866164282-3d8819543df5?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-100'
-            }
-          ]
-        },
-        {
-          id: 'gin-tonic-botanico',
-          name: 'Gin Tonic Botánico',
-          description: 'Limpio, crujiente y aromático. La mejor forma de apreciar una buena ginebra.',
-          image: 'https://images.unsplash.com/photo-1560526860-f33503c35b54?auto=format&fit=crop&w=800&q=80',
-          tags: ['Clásico', 'Refrescante', 'Gin'],
-          difficulty: 'Fácil',
-          time: '3 min',
-          rating: 4.6,
-          likes: 1450,
-          pairing: {
-            name: 'Tabla de Quesos',
-            description: 'Quesos suaves y uvas complementan los botánicos de la ginebra.',
-            image: 'https://images.unsplash.com/photo-1608649102431-7e828d844109?auto=format&fit=crop&w=600&q=80'
-          },
-          ingredients: [
-            { name: 'Gin', amount: '60 ml', icon: 'local_drink', color: 'bg-blue-50' },
-            { name: 'Agua Tónica', amount: '120 ml', icon: 'bubble_chart', color: 'bg-gray-50' },
-            { name: 'Pepino', amount: 'Tira', icon: 'horizontal_rule', color: 'bg-green-100' },
-            { name: 'Pimienta Rosa', amount: 'Granos', icon: 'grain', color: 'bg-pink-100' },
-            { name: 'Hielo', amount: 'Cubos', icon: 'stop', color: 'bg-cyan-100' }
-          ],
-          steps: [
-            {
-              id: 1,
-              title: 'Copa Balón',
-              description: 'Usa una copa ancha y enfríala moviendo el hielo dentro.',
-              image: 'https://images.unsplash.com/photo-1594451631405-b778465d3a01?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-100'
-            },
-            {
-              id: 2,
-              title: 'Gin First',
-              description: 'Escurre el agua sobrante del hielo y sirve la ginebra.',
-              image: 'https://images.unsplash.com/photo-1579540417242-4f368f56693a?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-50'
-            },
-            {
-              id: 3,
-              title: 'Burbuja Fina',
-              description: 'Sirve la tónica suavemente (usa una cuchara trenzada si tienes) para no romper la burbuja.',
-              image: 'https://images.unsplash.com/photo-1560526860-f33503c35b54?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-100'
-            },
-            {
-              id: 4,
-              title: 'Botánicos',
-              description: 'Decora con una tira larga de pepino y unos granos de pimienta.',
-              image: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-50'
-            }
-          ]
-        },
-        {
-          id: 'negroni',
-          name: 'Negroni',
-          description: 'El aperitivo italiano por excelencia. Un equilibrio perfecto entre lo amargo, lo dulce y lo botánico. Inconfundible color rojo rubí.',
-          image: 'https://images.unsplash.com/photo-1551754655-427029071e65?auto=format&fit=crop&w=800&q=80',
-          tags: ['Clásico', 'Aperitivo', 'Gin'],
-          difficulty: 'Fácil',
-          time: '4 min',
-          rating: 4.8,
-          likes: 1800,
-          pairing: {
-            name: 'Tabla de Quesos Curados',
-            description: 'La grasa del queso y la sal de las aceitunas contrastan con el amargor del Campari.',
-            image: 'https://images.unsplash.com/photo-1626202022874-56c9d0312d8a?auto=format&fit=crop&w=600&q=80'
-          },
-          ingredients: [
-            { name: 'Ginebra', amount: '30 ml', icon: 'local_drink', color: 'bg-blue-50' },
-            { name: 'Vermut Rojo', amount: '30 ml', icon: 'wine_bar', color: 'bg-red-900 text-white' },
-            { name: 'Campari', amount: '30 ml', icon: 'local_bar', color: 'bg-red-500 text-white' },
-            { name: 'Naranja', amount: 'Rodaja', icon: 'circle', color: 'bg-orange-400 text-white' }
-          ],
-          steps: [
-            {
-              id: 1,
-              title: 'Vaso Old Fashioned',
-              description: 'Llena un vaso corto y robusto con cubos de hielo grandes y sólidos.',
-              image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-red-100'
-            },
-            {
-              id: 2,
-              title: 'Partes Iguales',
-              description: 'Vierte la ginebra, el vermut rojo y el Campari directamente sobre el hielo.',
-              image: 'https://images.unsplash.com/photo-1536935338788-843bb52d3d08?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-red-200'
-            },
-            {
-              id: 3,
-              title: 'Remover',
-              description: 'Remueve suavemente con una cuchara de bar para enfriar y diluir ligeramente.',
-              image: 'https://images.unsplash.com/photo-1551754655-427029071e65?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-100'
-            },
-            {
-              id: 4,
-              title: 'Decoración',
-              description: 'Añade una rodaja o piel de naranja para aromatizar con aceites cítricos.',
-              image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-50'
-            }
-          ]
-        },
-        {
-          id: 'daiquiri',
-          name: 'Daiquiri',
-          description: 'La trinidad sagrada del ron: ron, lima y azúcar. Fresco, ácido y dulce en perfecta armonía. Un clásico cubano.',
-          image: 'https://images.unsplash.com/photo-1618852305546-e762a45d045c?auto=format&fit=crop&w=800&q=80',
-          tags: ['Clásico', 'Refrescante', 'Ron'],
-          difficulty: 'Fácil',
-          time: '5 min',
-          rating: 4.7,
-          likes: 1650,
-          pairing: {
-            name: 'Ceviche de Camarón',
-            description: 'La acidez del ceviche y la frescura del marisco bailan con el ron.',
-            image: 'https://images.unsplash.com/photo-1535400255456-984241443b29?auto=format&fit=crop&w=600&q=80'
-          },
-          ingredients: [
-            { name: 'Ron Blanco', amount: '60 ml', icon: 'local_drink', color: 'bg-gray-100' },
-            { name: 'Jugo de Lima', amount: '30 ml', icon: 'eco', color: 'bg-green-100' },
-            { name: 'Jarabe Simple', amount: '15 ml', icon: 'water_drop', color: 'bg-gray-50' },
-            { name: 'Lima', amount: 'Rodaja', icon: 'circle', color: 'bg-green-200' }
-          ],
-          steps: [
-            {
-              id: 1,
-              title: 'Hielo y Shaker',
-              description: 'Agrega todos los ingredientes líquidos a una coctelera con mucho hielo.',
-              image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-100'
-            },
-            {
-              id: 2,
-              title: 'Shake It!',
-              description: 'Agita vigorosamente por 15 segundos hasta que la coctelera esté helada al tacto.',
-              image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-100'
-            },
-            {
-              id: 3,
-              title: 'Colado Fino',
-              description: 'Cuela la mezcla en una copa coupette o martini previamente enfriada.',
-              image: 'https://images.unsplash.com/photo-1618852305546-e762a45d045c?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-50'
-            },
-            {
-              id: 4,
-              title: 'Toque Verde',
-              description: 'Decora con una rodaja fina de lima en el borde.',
-              image: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-200'
-            }
-          ]
-        },
-        {
-          id: 'cosmopolitan',
-          name: 'Cosmopolitan',
-          description: 'Icono de los 90s. Sofisticado, color rosa vibrante y con un toque frutal irresistible. La definición de elegancia moderna.',
-          image: 'https://images.unsplash.com/photo-1560963689-02e82e7a9e26?w=800',
-          tags: ['Elegante', 'Frutal', 'Vodka'],
-          difficulty: 'Medio',
-          time: '5 min',
-          rating: 4.6,
-          likes: 1900,
-          pairing: {
-            name: 'Brochetas de Fruta',
-            description: 'Frutas frescas con un toque de chocolate para un postre ligero.',
-            image: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=600&q=80'
-          },
-          ingredients: [
-            { name: 'Vodka', amount: '45 ml', icon: 'local_drink', color: 'bg-gray-100' },
-            { name: 'Triple Sec', amount: '15 ml', icon: 'liquor', color: 'bg-orange-100' },
-            { name: 'Jugo Arándano', amount: '30 ml', icon: 'water_drop', color: 'bg-red-800 text-white' },
-            { name: 'Jugo Lima', amount: '10 ml', icon: 'eco', color: 'bg-green-100' },
-            { name: 'Piel Naranja', amount: 'Twist', icon: 'gesture', color: 'bg-orange-400' }
-          ],
-          steps: [
-            {
-              id: 1,
-              title: 'Copa Fría',
-              description: 'Enfría una copa martini con hielo mientras preparas la mezcla.',
-              image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-pink-100'
-            },
-            {
-              id: 2,
-              title: 'Agitar',
-              description: 'Combina vodka, triple sec, jugos y hielo en el shaker. Agita fuerte.',
-              image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-red-100'
-            },
-            {
-              id: 3,
-              title: 'Servir',
-              description: 'Descarta el hielo de la copa y cuela la mezcla rosa brillante.',
-              image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-pink-200'
-            },
-            {
-              id: 4,
-              title: 'Twist',
-              description: 'Exprime los aceites de un twist de naranja sobre la copa y decora.',
-              image: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-100'
-            }
-          ]
-        },
-        {
-          id: 'michelada',
-          name: 'Michelada',
-          description: 'El remedio infalible. Cerveza helada transformada con salsas, limón y un borde picante. Sabor a México en cada trago.',
-          image: 'https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=800',
-          tags: ['Mexicano', 'Picante', 'Cerveza'],
-          difficulty: 'Fácil',
-          time: '3 min',
-          rating: 4.9,
-          likes: 2100,
-          pairing: {
-            name: 'Tacos al Pastor',
-            description: 'La grasa del cerdo adobado y la piña piden a gritos una cerveza preparada.',
-            image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80'
-          },
-          ingredients: [
-            { name: 'Cerveza Clara', amount: '1 Botella', icon: 'sports_bar', color: 'bg-yellow-200' },
-            { name: 'Jugo Limón', amount: '30 ml', icon: 'eco', color: 'bg-green-100' },
-            { name: 'Salsas', amount: 'Mix', icon: 'science', color: 'bg-black text-white' },
-            { name: 'Chile Polvo', amount: 'Borde', icon: 'grain', color: 'bg-red-600 text-white' },
-            { name: 'Hielo', amount: 'Cubos', icon: 'ac_unit', color: 'bg-gray-100' }
-          ],
-          steps: [
-            {
-              id: 1,
-              title: 'Escarchado',
-              description: 'Pasa limón por el borde del vaso y cúbrelo generosamente con sal y chile en polvo.',
-              image: 'https://images.unsplash.com/photo-1536935338788-843bb52d3d08?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-red-200'
-            },
-            {
-              id: 2,
-              title: 'El Petróleo',
-              description: 'Agrega hielo, jugo de limón, salsa inglesa y salsa picante al fondo.',
-              image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-200'
-            },
-            {
-              id: 3,
-              title: 'Integrar',
-              description: 'Mezcla bien las salsas con el limón para crear la base de sabor.',
-              image: 'https://images.unsplash.com/photo-1599021456807-25db0f974333?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-100'
-            },
-            {
-              id: 4,
-              title: 'La Cheve',
-              description: 'Vierte la cerveza bien fría lentamente para no perder el gas. ¡Salud!',
-              image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-200'
-            }
-          ]
-        },
-        {
-          id: 'charro-negro',
-          name: 'Charro Negro',
-          description: 'La versión mexicana de la Cuba Libre. Tequila, refresco de cola, limón y sal. Simple, directo y muy peligroso.',
-          image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800',
-          tags: ['Mexicano', 'Refrescante', 'Tequila'],
-          difficulty: 'Fácil',
-          time: '2 min',
-          rating: 4.5,
-          likes: 1300,
-          pairing: {
-            name: 'Nachos con Queso',
-            description: 'Botana clásica de bar que acompaña perfectamente el dulzor de la cola.',
-            image: 'https://images.unsplash.com/photo-1582169296194-e90dd58bd961?auto=format&fit=crop&w=600&q=80'
-          },
-          ingredients: [
-            { name: 'Tequila', amount: '60 ml', icon: 'local_drink', color: 'bg-yellow-100' },
-            { name: 'Refresco Cola', amount: 'Top', icon: 'local_bar', color: 'bg-black text-white' },
-            { name: 'Limón', amount: 'Medio', icon: 'eco', color: 'bg-green-100' },
-            { name: 'Sal', amount: 'Pizca', icon: 'grain', color: 'bg-white' }
-          ],
-          steps: [
-            {
-              id: 1,
-              title: 'Limón Base',
-              description: 'Exprime medio limón en un vaso alto (highball) y añade una pizca de sal.',
-              image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-100'
-            },
-            {
-              id: 2,
-              title: 'Tequila y Hielo',
-              description: 'Llena el vaso con cubos de hielo y vierte el tequila reposado o blanco.',
-              image: 'https://images.unsplash.com/photo-1582260655272-4c22737f5cae?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-100'
-            },
-            {
-              id: 3,
-              title: 'El Refresco',
-              description: 'Completa con refresco de cola bien frío hasta el borde.',
-              image: 'https://images.unsplash.com/photo-1625866164282-3d8819543df5?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-800'
-            },
-            {
-              id: 4,
-              title: 'Decorar',
-              description: 'Revuelve suavemente una vez y decora con una rodaja de limón.',
-              image: 'https://images.unsplash.com/photo-1629247926958-3932b785d033?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-50'
-            }
+             { id: 1, title: 'Stir', description: 'Diluye lentamente.', image: 'https://images.unsplash.com/photo-1598155523122-38423bb4d6c1?w=600', bgColor: 'bg-orange-200' }
           ]
         },
         {
           id: 'whiskey-sour',
+          family: 'Old School',
           name: 'Whiskey Sour',
-          description: 'Un clásico atemporal. La mezcla perfecta de fuerza, dulzor y acidez con una textura sedosa increíble.',
+          description: 'Sedoso, ácido y dulce.',
           image: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800',
-          tags: ['Clásico', 'Cítrico', 'Whiskey'],
+          tags: ['Clásico', 'Whiskey'],
           difficulty: 'Medio',
           time: '5 min',
           rating: 4.7,
           likes: 1850,
-          pairing: {
-            name: 'Tabla de Carnes Frías',
-            description: 'El sabor ahumado de los embutidos complementa el whiskey.',
-            image: 'https://images.unsplash.com/photo-1592394532725-3b98754b5dfd?auto=format&fit=crop&w=600&q=80'
-          },
           ingredients: [
             { name: 'Bourbon', amount: '60 ml', icon: 'local_bar', color: 'bg-orange-200' },
-            { name: 'Jugo Limón', amount: '30 ml', icon: 'eco', color: 'bg-yellow-100' },
-            { name: 'Jarabe Simple', amount: '15 ml', icon: 'water_drop', color: 'bg-gray-100' },
-            { name: 'Clara de Huevo', amount: 'Opcional', icon: 'egg', color: 'bg-white' },
-            { name: 'Cereza', amount: '1 u', icon: 'circle', color: 'bg-red-500 text-white' }
+            { name: 'Limón', amount: '30 ml', icon: 'eco', color: 'bg-yellow-100' },
+            { name: 'Clara', amount: '1 u', icon: 'egg', color: 'bg-white' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'Dry Shake',
-              description: 'Si usas clara de huevo, agita todos los ingredientes SIN hielo primero para crear espuma.',
-              image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-gray-100'
-            },
-            {
-              id: 2,
-              title: 'Agitar con Hielo',
-              description: 'Añade hielo y agita vigorosamente durante 15 segundos para enfriar.',
-              image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-100'
-            },
-            {
-              id: 3,
-              title: 'Colado',
-              description: 'Cuela la mezcla en un vaso Old Fashioned o copa fría.',
-              image: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-100'
-            },
-            {
-              id: 4,
-              title: 'Decorar',
-              description: 'Añade una cereza al marrasquino y una rodaja de naranja.',
-              image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-red-50'
-            }
+             { id: 1, title: 'Dry Shake', description: 'Sin hielo primero.', image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?w=600', bgColor: 'bg-gray-100' }
           ]
         },
+        // --- FAMILIA MEXICAN ---
         {
-          id: 'mai-tai',
-          name: 'Mai Tai',
-          description: 'El rey de los cócteles Tiki. Una compleja mezcla de rones y almendras que sabe a paraíso tropical.',
-          image: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=800',
-          tags: ['Tropical', 'Verano', 'Ron'],
-          difficulty: 'Medio',
-          time: '6 min',
-          rating: 4.6,
-          likes: 1400,
-          pairing: {
-            name: 'Poke Bowl de Atún',
-            description: 'Frescura oceánica que combina con la complejidad del ron.',
-            image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'
-          },
-          ingredients: [
-            { name: 'Ron Blanco', amount: '30 ml', icon: 'local_drink', color: 'bg-gray-100' },
-            { name: 'Ron Oscuro', amount: '30 ml', icon: 'liquor', color: 'bg-orange-900 text-white' },
-            { name: 'Curaçao Naranja', amount: '15 ml', icon: 'local_bar', color: 'bg-orange-400 text-white' },
-            { name: 'Orgeat', amount: '15 ml', icon: 'grain', color: 'bg-yellow-50' },
-            { name: 'Jugo Lima', amount: '30 ml', icon: 'eco', color: 'bg-green-100' }
-          ],
-          steps: [
-            {
-              id: 1,
-              title: 'Shaker',
-              description: 'Añade los rones, el curaçao, el orgeat (jarabe de almendra) y el jugo de lima a la coctelera.',
-              image: 'https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-100'
-            },
-            {
-              id: 2,
-              title: 'Agitar',
-              description: 'Agita brevemente con hielo. No queremos diluirlo demasiado.',
-              image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-orange-200'
-            },
-            {
-              id: 3,
-              title: 'Hielo Picado',
-              description: 'Cuela en un vaso Tiki o bajo lleno de hielo picado fresco.',
-              image: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-100'
-            },
-            {
-              id: 4,
-              title: 'Isla Tropical',
-              description: 'Decora con una rama grande de menta y media lima vacía invertida (la isla).',
-              image: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-green-100'
-            }
-          ]
-        },
-        {
-          id: 'tom-collins',
-          name: 'Tom Collins',
-          description: 'Como una limonada, pero mejor. Ginebra y cítricos en un vaso alto. Refrescante hasta la última gota.',
-          image: 'https://images.unsplash.com/photo-1587888637140-849b13f3e1a3?w=800',
-          tags: ['Clásico', 'Refrescante', 'Gin'],
+          id: 'michelada',
+          family: 'Mexicanas',
+          name: 'Michelada',
+          description: 'Cerveza preparada con todo.',
+          image: 'https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=800',
+          tags: ['Mexicano', 'Cerveza'],
           difficulty: 'Fácil',
           time: '3 min',
-          rating: 4.5,
-          likes: 1250,
-          pairing: {
-            name: 'Ensalada Mediterránea',
-            description: 'Sabores ligeros y frescos que no compiten con la bebida.',
-            image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80'
-          },
+          rating: 4.9,
+          likes: 2100,
           ingredients: [
-            { name: 'Gin', amount: '60 ml', icon: 'local_drink', color: 'bg-blue-50' },
-            { name: 'Jugo Limón', amount: '30 ml', icon: 'eco', color: 'bg-yellow-100' },
-            { name: 'Jarabe Simple', amount: '15 ml', icon: 'water_drop', color: 'bg-gray-100' },
-            { name: 'Agua Mineral', amount: 'Top', icon: 'bubble_chart', color: 'bg-blue-100' },
-            { name: 'Cereza', amount: '1 u', icon: 'circle', color: 'bg-red-500 text-white' }
+            { name: 'Cerveza', amount: '1', icon: 'sports_bar', color: 'bg-yellow-200' },
+            { name: 'Salsas', amount: 'Mix', icon: 'science', color: 'bg-black text-white' }
           ],
           steps: [
-            {
-              id: 1,
-              title: 'Vaso Alto',
-              description: 'Llena un vaso Collins o alto con cubos de hielo hasta el borde.',
-              image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-50'
-            },
-            {
-              id: 2,
-              title: 'Construir',
-              description: 'Vierte la ginebra, el jugo de limón y el jarabe directamente en el vaso.',
-              image: 'https://images.unsplash.com/photo-1587888637140-849b13f3e1a3?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-50'
-            },
-            {
-              id: 3,
-              title: 'Burbujas',
-              description: 'Completa con agua mineral con gas. Deja espacio para decorar.',
-              image: 'https://images.unsplash.com/photo-1560526860-f33503c35b54?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-blue-100'
-            },
-            {
-              id: 4,
-              title: 'Remover',
-              description: 'Remueve suavemente una vez para mezclar y decora con limón y cereza.',
-              image: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=600&q=80',
-              bgColor: 'bg-yellow-100'
-            }
+             { id: 1, title: 'Rim', description: 'Chile y limón.', image: 'https://images.unsplash.com/photo-1536935338788-843bb52d3d08?w=600', bgColor: 'bg-red-200' }
+          ]
+        },
+        {
+          id: 'charro-negro',
+          family: 'Mexicanas',
+          name: 'Charro Negro',
+          description: 'Cuba libre a la mexicana.',
+          image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800',
+          tags: ['Mexicano', 'Tequila'],
+          difficulty: 'Fácil',
+          time: '2 min',
+          rating: 4.5,
+          likes: 1300,
+          ingredients: [
+            { name: 'Tequila', amount: '60 ml', icon: 'local_drink', color: 'bg-yellow-100' },
+            { name: 'Cola', amount: 'Top', icon: 'local_bar', color: 'bg-black text-white' }
+          ],
+          steps: [
+             { id: 1, title: 'Build', description: 'Vaso alto con hielo.', image: 'https://images.unsplash.com/photo-1582260655272-4c22737f5cae?w=600', bgColor: 'bg-yellow-100' }
+          ]
+        },
+        {
+          id: 'aperol-spritz',
+          family: 'Summer Spritz',
+          name: 'Aperol Spritz',
+          description: 'Atardecer italiano.',
+          image: 'https://images.unsplash.com/photo-1560512823-8db965dfc5d4?w=800',
+          tags: ['Aperitivo', 'Vino'],
+          difficulty: 'Fácil',
+          time: '3 min',
+          rating: 4.6,
+          likes: 1800,
+          ingredients: [
+             { name: 'Prosecco', amount: '90 ml', icon: 'celebration', color: 'bg-yellow-100' },
+             { name: 'Aperol', amount: '60 ml', icon: 'local_bar', color: 'bg-orange-500 text-white' }
+          ],
+          steps: [
+             { id: 1, title: '3-2-1', description: '3 Prosecco, 2 Aperol, 1 Soda.', image: 'https://images.unsplash.com/photo-1560512823-8db965dfc5d4?w=600', bgColor: 'bg-orange-200' }
           ]
         }
       ];
 
       // --- COMPONENTS ---
 
-      // Button.tsx
-      const Button = ({ 
-        children, 
-        variant = 'primary', 
-        fullWidth = false, 
-        className = '',
-        ...props 
-      }) => {
-        const baseStyle = "font-sans font-bold transition-all duration-200 active:translate-x-[2px] active:translate-y-[2px] active:shadow-toon-active disabled:opacity-50 disabled:cursor-not-allowed";
+      const Button = ({ children, variant = 'primary', fullWidth = false, className = '', ...props }) => {
+        const baseStyle = "font-sans font-bold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
         
         const variants = {
-          primary: "bg-toon-primary text-white border-3 border-toon-border shadow-toon rounded-xl py-3 px-6 hover:shadow-toon-hover",
-          secondary: "bg-toon-secondary text-white border-3 border-toon-border shadow-toon rounded-xl py-3 px-6 hover:shadow-toon-hover",
-          outline: "bg-white text-toon-dark border-3 border-toon-border shadow-toon rounded-xl py-3 px-6 hover:bg-gray-50",
-          icon: "bg-white/20 backdrop-blur-md border-2 border-white/50 text-white p-3 rounded-full hover:bg-white/30"
+          primary: "bg-toon-primary text-white border-3 border-toon-border shadow-toon rounded-xl py-3 px-6 hover:shadow-toon-hover hover:-translate-y-1 active:translate-y-0 active:shadow-toon-active",
+          secondary: "bg-toon-secondary text-white border-3 border-toon-border shadow-toon rounded-xl py-3 px-6 hover:shadow-toon-hover hover:-translate-y-1 active:translate-y-0 active:shadow-toon-active",
+          outline: "bg-white text-toon-dark border-3 border-toon-border shadow-toon rounded-xl py-3 px-6 hover:bg-gray-50 hover:-translate-y-1",
+          icon: "bg-white/20 backdrop-blur-md border-2 border-white/50 text-white p-3 rounded-full hover:bg-white/30 hover:scale-110"
         };
 
         return (
-          <button 
-            className={`${baseStyle} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
-            {...props}
-          >
+          <button className={`${baseStyle} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`} {...props}>
             {children}
           </button>
         );
       };
 
-      // NavBar.tsx
       const NavBar = () => {
         const location = useLocation();
         const isActive = (path) => location.pathname === path;
 
         return (
           <nav className="fixed bottom-6 left-4 right-4 z-50 pointer-events-none">
-            <div className="bg-toon-dark text-white rounded-full p-2 pl-8 pr-8 shadow-2xl flex justify-between items-center border-2 border-white/10 max-w-md mx-auto pointer-events-auto md:pl-12 md:pr-12 md:max-w-lg md:py-3">
-              <Link to="/" className={`flex flex-col items-center transition-colors group ${isActive('/') ? 'text-toon-primary' : 'text-gray-400 hover:text-white'}`}>
+            <div className="glass-panel text-toon-dark rounded-full p-2 pl-8 pr-8 shadow-2xl flex justify-between items-center border-3 border-toon-border max-w-md mx-auto pointer-events-auto md:pl-12 md:pr-12 md:max-w-lg md:py-3 transition-transform hover:scale-[1.02]">
+              <Link to="/" className={`flex flex-col items-center transition-colors group ${isActive('/') ? 'text-toon-primary' : 'text-gray-500 hover:text-toon-dark'}`}>
                 <span className="material-icons-round text-2xl md:text-[32px] group-hover:-translate-y-1 transition-transform">home</span>
                 <span className="text-[10px] font-bold mt-1 hidden md:block tracking-wide">INICIO</span>
               </Link>
               
               <Link to="/" className="relative -top-8 md:-top-10">
-                <div className="bg-toon-primary w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-toon-bg flex items-center justify-center shadow-toon transform transition-transform hover:-translate-y-1 hover:scale-105 hover:rotate-3">
+                <div className="bg-toon-primary w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-toon-bg flex items-center justify-center shadow-toon transform transition-all hover:-translate-y-2 hover:rotate-6 active:scale-90">
                   <span className="material-icons-round text-3xl md:text-4xl text-white">local_bar</span>
                 </div>
               </Link>
               
-              <button className="flex flex-col items-center text-gray-400 hover:text-white transition-colors group">
+              <button className="flex flex-col items-center text-gray-500 hover:text-toon-primary transition-colors group">
                 <span className="material-icons-round text-2xl md:text-[32px] group-hover:-translate-y-1 transition-transform">favorite</span>
-                <span className="text-[10px] font-bold mt-1 hidden md:block tracking-wide">FAVORITOS</span>
+                <span className="text-[10px] font-bold mt-1 hidden md:block tracking-wide">FAVS</span>
               </button>
             </div>
           </nav>
         );
       };
 
-      // CocktailCard.tsx
       const CocktailCard = ({ cocktail }) => {
         return (
-          <Link to={`/recipe/${cocktail.id}`} className="block group w-full max-w-[400px]">
-            <article className="bg-white rounded-3xl border-3 border-toon-border shadow-toon overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:-translate-y-2 group-hover:scale-[1.02] group-hover:shadow-toon-hover">
-              <div className="relative h-64 overflow-hidden bg-gray-100">
+          <Link to={`/recipe/${cocktail.id}`} className="block group w-full h-full">
+            <article className="bg-white rounded-2xl border-3 border-toon-border shadow-toon overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-toon-hover relative">
+              <div className="relative h-48 overflow-hidden bg-gray-100">
                 <img 
                   src={cocktail.image} 
                   alt={cocktail.name} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute top-4 right-4">
-                  <button className="bg-white p-2 rounded-full border-2 border-toon-border shadow-sm hover:bg-red-50 transition-colors">
-                    <span className="material-icons-round text-toon-primary text-xl">favorite</span>
-                  </button>
-                </div>
-                <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                <div className="absolute top-2 right-2">
+                  <div className="bg-white/80 backdrop-blur p-1.5 rounded-full border-2 border-toon-border shadow-sm hover:scale-110 transition-transform">
+                    <span className="material-icons-round text-toon-primary text-sm">favorite</span>
+                  </div>
                 </div>
               </div>
               
-              <div className="p-5 flex-1 flex flex-col">
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {cocktail.tags.map(tag => (
-                    <span key={tag} className="px-3 py-1 bg-toon-accent/20 text-toon-dark text-xs font-bold rounded-full uppercase tracking-wider border border-toon-accent">
+              <div className="p-4 flex-1 flex flex-col">
+                <h3 className="font-display text-2xl text-toon-dark leading-tight mb-1">{cocktail.name}</h3>
+                <div className="flex gap-2 mb-2">
+                  {cocktail.tags.slice(0, 2).map(tag => (
+                    <span key={tag} className="text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200">
                       {tag}
                     </span>
                   ))}
                 </div>
-                
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-display text-3xl text-toon-dark">{cocktail.name}</h3>
-                </div>
-                
-                <div className="flex items-center gap-4 text-sm font-semibold text-gray-500 mt-auto">
-                  <div className="flex items-center gap-1">
-                    <span className="material-icons-round text-base">schedule</span>
-                    {cocktail.time}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="material-icons-round text-base">bolt</span>
-                    {cocktail.difficulty}
-                  </div>
-                  <div className="flex items-center gap-1 ml-auto text-toon-primary">
-                    <span className="material-icons-round text-base">star</span>
-                    {cocktail.rating}
-                  </div>
+                <div className="flex items-center gap-3 text-xs font-bold text-gray-400 mt-auto">
+                  <span className="flex items-center gap-1"><span className="material-icons-round text-sm">schedule</span>{cocktail.time}</span>
+                  <span className="flex items-center gap-1 text-toon-accent"><span className="material-icons-round text-sm">star</span>{cocktail.rating}</span>
                 </div>
               </div>
             </article>
@@ -1115,236 +611,237 @@
         );
       };
 
-      // --- PAGES ---
-
-      // Home.tsx
-      const Home = () => {
-        const [searchTerm, setSearchTerm] = useState('');
-        const [activeCategory, setActiveCategory] = useState('Todos');
-
-        const categories = ['Todos', 'Populares', 'Mexicano', 'Clásico', 'Verano', 'Tequila', 'Vodka'];
-
-        const filteredCocktails = useMemo(() => {
-          return COCKTAILS.filter(cocktail => {
-            const matchesSearch = cocktail.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                                  cocktail.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-            
-            const matchesCategory = activeCategory === 'Todos' || 
-                                    cocktail.tags.map(t => t.toUpperCase()).includes(activeCategory.toUpperCase()) ||
-                                    (activeCategory === 'Populares' && cocktail.likes > 1000);
-
-            return matchesSearch && matchesCategory;
-          });
-        }, [searchTerm, activeCategory]);
+      const FamilyCard = ({ family, cocktails, isExpanded, onToggle }) => {
+        // Generate a composite image or use the first one
+        const coverImage = cocktails[0].image;
+        const count = cocktails.length;
 
         return (
-          <div className="pb-24 pt-8 px-4 max-w-7xl mx-auto">
-            <header className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <button className="hidden md:flex items-center justify-center w-12 h-12 rounded-full border-2 border-toon-border hover:bg-white transition-colors">
-                  <span className="material-icons-round text-3xl text-toon-dark">menu</span>
-                </button>
-                <div>
-                  <h1 className="font-display text-4xl mb-1 text-center md:text-left">Toon Bar</h1>
-                  <p className="text-gray-500 font-medium md:hidden">¿Qué mezclamos hoy?</p>
+          <div className={`mb-6 transition-all duration-500 ease-in-out ${isExpanded ? 'scale-[1.01]' : 'hover:scale-[1.01]'}`}>
+            {/* Header / Trigger */}
+            <div 
+              onClick={onToggle}
+              className={`bg-white rounded-3xl border-3 border-toon-border shadow-toon cursor-pointer overflow-hidden relative z-10 transition-shadow duration-300 ${isExpanded ? 'shadow-toon-active translate-y-[4px] translate-x-[4px]' : 'hover:shadow-toon-hover'}`}
+            >
+              <div className="relative h-40 md:h-48">
+                <img src={coverImage} className="w-full h-full object-cover opacity-90 transition-transform duration-700 hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-r from-toon-dark/90 to-transparent flex items-center px-6 md:px-10">
+                  <div>
+                    <h2 className="font-display text-4xl md:text-5xl text-white drop-shadow-md tracking-wide transform transition-transform group-hover:translate-x-2">
+                      {family}
+                    </h2>
+                    <div className="flex items-center gap-2 mt-2">
+                       <span className="bg-toon-primary text-white text-xs font-bold px-3 py-1 rounded-full border-2 border-white/20 shadow-sm">
+                         {count} Variantes
+                       </span>
+                       <span className={`material-icons-round text-white text-3xl transition-transform duration-500 ${isExpanded ? 'rotate-180' : ''}`}>
+                         expand_more
+                       </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Stack effect visual */}
+                <div className="absolute right-4 bottom-4 flex -space-x-3">
+                  {cocktails.slice(0, 3).map((c, i) => (
+                    <img key={c.id} src={c.image} className={`w-10 h-10 rounded-full border-2 border-white object-cover shadow-md z-${30-i*10}`} />
+                  ))}
+                  {count > 3 && (
+                    <div className="w-10 h-10 rounded-full border-2 border-white bg-toon-dark text-white flex items-center justify-center text-xs font-bold z-0">
+                      +{count-3}
+                    </div>
+                  )}
                 </div>
               </div>
-              
-              <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-                <div className="relative group w-full md:w-96 order-2 md:order-1">
-                  <input 
-                    type="text" 
-                    placeholder="Buscar cócteles..." 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-white border-3 border-toon-border rounded-2xl py-3 pl-10 pr-4 font-bold shadow-toon focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-toon-active transition-all placeholder:text-gray-400"
-                  />
-                  <span className="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl group-focus-within:text-toon-primary transition-colors">search</span>
-                </div>
-
-                <div className="w-12 h-12 bg-toon-secondary rounded-full border-3 border-toon-border overflow-hidden order-1 md:order-2 self-end md:self-auto">
-                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" className="w-full h-full" />
-                </div>
-              </div>
-            </header>
-
-            <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar mb-4">
-              {categories.map((cat) => (
-                <button 
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`whitespace-nowrap px-6 py-2 rounded-xl font-bold border-3 border-toon-border shadow-toon transition-all active:scale-95 ${activeCategory === cat ? 'bg-toon-primary text-white shadow-toon-active translate-y-[2px] translate-x-[2px]' : 'bg-white text-toon-dark hover:bg-gray-50'}`}
-                >
-                  {cat}
-                </button>
-              ))}
             </div>
 
-            {filteredCocktails.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredCocktails.map(cocktail => (
-                  <div key={cocktail.id} className="flex justify-center">
-                    <CocktailCard cocktail={cocktail} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-20 opacity-50">
-                <span className="material-icons-round text-6xl mb-4">sentiment_dissatisfied</span>
-                <p className="font-bold text-xl">No encontramos esa bebida...</p>
-              </div>
-            )}
+            {/* Expandable Grid */}
+            <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 transition-all duration-500 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[1000px] opacity-100 scale-100' : 'max-h-0 opacity-0 scale-95'}`}>
+              {cocktails.map((c, index) => (
+                <div key={c.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                  <CocktailCard cocktail={c} />
+                </div>
+              ))}
+            </div>
           </div>
         );
       };
 
-      // Recipe.tsx
+      // --- PAGES ---
+
+      const Home = () => {
+        const [searchTerm, setSearchTerm] = useState('');
+        const [expandedFamily, setExpandedFamily] = useState(null);
+
+        // Group cocktails by family
+        const families = useMemo(() => {
+          const groups = {};
+          COCKTAILS.forEach(c => {
+            const fam = c.family || 'Otros';
+            // Search filter logic applied here to hide families that don't match
+            if (searchTerm === '' || 
+                c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                c.tags.some(t => t.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                fam.toLowerCase().includes(searchTerm.toLowerCase())
+               ) {
+              if (!groups[fam]) groups[fam] = [];
+              groups[fam].push(c);
+            }
+          });
+          return groups;
+        }, [searchTerm]);
+
+        const handleToggle = (family) => {
+          setExpandedFamily(prev => prev === family ? null : family);
+        };
+
+        return (
+          <div className="pb-24 pt-8 px-4 max-w-7xl mx-auto min-h-screen">
+            <header className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex items-center gap-4 animate-fade-in-up">
+                <div className="w-14 h-14 bg-toon-accent rounded-full border-3 border-toon-border flex items-center justify-center shadow-toon-sm rotate-3 hover:rotate-12 transition-transform">
+                  <span className="material-icons-round text-3xl text-toon-dark">local_bar</span>
+                </div>
+                <div>
+                  <h1 className="font-display text-5xl mb-0 text-toon-dark leading-none">Toon Bar</h1>
+                  <p className="text-gray-500 font-bold text-sm tracking-wider">FRACTAL EDITION</p>
+                </div>
+              </div>
+              
+              <div className="w-full md:w-auto animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                <div className="relative group w-full md:w-80">
+                  <input 
+                    type="text" 
+                    placeholder="Busca tu veneno..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full bg-white border-3 border-toon-border rounded-2xl py-3 pl-12 pr-4 font-bold shadow-toon focus:outline-none focus:shadow-toon-active focus:translate-x-[2px] focus:translate-y-[2px] transition-all placeholder:text-gray-300"
+                  />
+                  <span className="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-2xl group-focus-within:text-toon-primary transition-colors">search</span>
+                </div>
+              </div>
+            </header>
+
+            <div className="space-y-2">
+              {Object.keys(families).length > 0 ? (
+                Object.entries(families).map(([family, cocktails], idx) => (
+                  <div key={family} className="animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
+                    <FamilyCard 
+                      family={family} 
+                      cocktails={cocktails} 
+                      isExpanded={expandedFamily === family || searchTerm !== ''} // Auto expand on search
+                      onToggle={() => handleToggle(family)}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-20 opacity-50 flex flex-col items-center animate-pop-in">
+                  <span className="material-icons-round text-8xl mb-4 text-gray-300">liquor</span>
+                  <p className="font-bold text-2xl text-gray-400">¡Se acabó el alcohol!</p>
+                  <p className="text-gray-400">No encontramos esa bebida.</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="h-10"></div>
+          </div>
+        );
+      };
+
       const Recipe = () => {
         const { id } = useParams();
         const navigate = useNavigate();
         const cocktail = COCKTAILS.find(c => c.id === id);
         const [checkedIngredients, setCheckedIngredients] = useState([]);
+        const [isLoaded, setIsLoaded] = useState(false);
+
+        useEffect(() => {
+          setIsLoaded(true);
+          window.scrollTo(0, 0);
+        }, []);
 
         if (!cocktail) return <div>Coctel no encontrado</div>;
 
         const toggleIngredient = (name) => {
-          setCheckedIngredients(prev => 
-            prev.includes(name) ? prev.filter(i => i !== name) : [...prev, name]
-          );
-        };
-
-        const handleShare = () => {
-          alert('¡Cóctel compartido!');
+          setCheckedIngredients(prev => prev.includes(name) ? prev.filter(i => i !== name) : [...prev, name]);
         };
 
         return (
-          <div className="min-h-screen bg-white pb-24 md:pb-32">
-            <div className="md:flex md:items-start md:min-h-[60vh] max-w-7xl mx-auto">
-              <div className="relative h-[50vh] w-full md:h-[600px] md:w-2/5 md:sticky md:top-0">
-                <img src={cocktail.image} alt={cocktail.name} className="w-full h-full object-cover md:rounded-br-[3rem]" />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-white md:hidden"></div>
-                
-                <div className="absolute top-6 left-4 right-4 flex justify-between items-start z-10">
-                  <Button variant="icon" onClick={() => navigate(-1)}>
-                    <span className="material-icons-round">arrow_back</span>
-                  </Button>
-                  <div className="flex gap-3">
-                    <Button variant="icon" onClick={handleShare}>
-                      <span className="material-icons-round">share</span>
-                    </Button>
-                    <Button variant="icon">
-                      <span className="material-icons-round">bookmark_border</span>
-                    </Button>
-                  </div>
-                </div>
+          <div className={`min-h-screen bg-white pb-24 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="relative h-[45vh] lg:h-[50vh] w-full overflow-hidden">
+               <img src={cocktail.image} className="w-full h-full object-cover animate-expand scale-105 origin-center" />
+               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
+               
+               <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-start">
+                 <Button variant="icon" onClick={() => navigate(-1)}><span className="material-icons-round">arrow_back</span></Button>
+                 <Button variant="icon"><span className="material-icons-round">favorite_border</span></Button>
+               </div>
 
-                <div className="absolute -bottom-16 left-4 right-4 md:hidden">
-                  <div className="bg-toon-accent border-3 border-toon-border rounded-3xl p-6 shadow-toon text-center transform -rotate-1">
-                    <h1 className="font-display text-4xl text-toon-dark mb-1">{cocktail.name}</h1>
-                    <div className="flex justify-center gap-4 text-sm font-bold opacity-80">
-                      <span className="flex items-center gap-1"><span className="material-icons-round text-base">timer</span> {cocktail.time}</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1"><span className="material-icons-round text-base">bolt</span> {cocktail.difficulty}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-20 px-6 max-w-lg mx-auto md:mt-0 md:w-3/5 md:px-12 md:max-w-none md:py-12">
-                <div className="hidden md:block mb-8">
-                  <h1 className="font-display text-6xl text-toon-dark mb-4">{cocktail.name}</h1>
-                  <div className="flex gap-6 text-lg font-bold text-gray-500">
-                    <span className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full"><span className="material-icons-round">timer</span> {cocktail.time}</span>
-                    <span className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full"><span className="material-icons-round">bolt</span> {cocktail.difficulty}</span>
-                    <span className="flex items-center gap-2 bg-toon-primary/10 text-toon-primary px-4 py-2 rounded-full"><span className="material-icons-round">star</span> {cocktail.rating}</span>
-                  </div>
-                </div>
-
-                <p className="text-gray-600 text-center md:text-left mb-8 font-medium leading-relaxed text-lg">
-                  {cocktail.description}
-                </p>
-
-                <div className="mb-10">
-                  <h2 className="font-display text-3xl mb-6 flex items-center gap-3">
-                    <span className="bg-toon-secondary w-10 h-10 rounded-xl border-3 border-toon-border flex items-center justify-center text-white shadow-[3px_3px_0_#000]">
-                      <span className="material-icons-round">shopping_basket</span>
-                    </span>
-                    Ingredientes
-                  </h2>
-                  <div className="space-y-3">
-                    {cocktail.ingredients.map(ing => (
-                      <div 
-                        key={ing.name} 
-                        onClick={() => toggleIngredient(ing.name)}
-                        className={`flex items-center p-4 rounded-2xl border-3 cursor-pointer transition-all duration-200 ${
-                          checkedIngredients.includes(ing.name) 
-                            ? 'bg-green-50 border-green-500 opacity-60' 
-                            : 'bg-white border-gray-200 hover:border-toon-border hover:shadow-toon hover:-translate-y-1'
-                        }`}
-                      >
-                        <div className={`w-12 h-12 ${ing.color} rounded-full flex items-center justify-center mr-4 border-2 border-toon-border`}>
-                          <span className="material-icons-round text-toon-dark">{ing.icon}</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-bold text-lg text-toon-dark">{ing.name}</p>
-                        </div>
-                        <div className="font-bold text-toon-secondary bg-toon-secondary/10 px-3 py-1 rounded-lg">
-                          {ing.amount}
-                        </div>
-                        <div className={`ml-4 w-6 h-6 rounded-full border-2 border-toon-border flex items-center justify-center transition-colors ${checkedIngredients.includes(ing.name) ? 'bg-green-500' : 'bg-white'}`}>
-                          {checkedIngredients.includes(ing.name) && <span className="material-icons-round text-white text-sm">check</span>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+               <div className="absolute bottom-0 left-0 right-0 p-6 text-white animate-fade-in-up">
+                 <div className="bg-toon-primary/90 backdrop-blur-md inline-block px-3 py-1 rounded-lg border border-white/20 mb-2 text-xs font-bold tracking-widest uppercase shadow-sm">
+                   {cocktail.family}
+                 </div>
+                 <h1 className="font-display text-5xl lg:text-7xl mb-2 drop-shadow-lg">{cocktail.name}</h1>
+                 <div className="flex gap-4 text-sm font-bold opacity-90">
+                   <span className="flex items-center gap-1 bg-black/30 px-3 py-1 rounded-full backdrop-blur"><span className="material-icons-round text-base">timer</span> {cocktail.time}</span>
+                   <span className="flex items-center gap-1 bg-black/30 px-3 py-1 rounded-full backdrop-blur"><span className="material-icons-round text-base">bolt</span> {cocktail.difficulty}</span>
+                 </div>
+               </div>
             </div>
 
-            <div className="px-6 md:px-12 max-w-7xl mx-auto">
-              {cocktail.pairing && (
-                <div className="mb-10">
-                  <h2 className="font-display text-3xl mb-6 flex items-center gap-3">
-                    <span className="bg-toon-primary w-10 h-10 rounded-xl border-3 border-toon-border flex items-center justify-center text-white shadow-[3px_3px_0_#000]">
-                      <span className="material-icons-round">restaurant</span>
-                    </span>
-                    Maridaje Perfecto (Guak!)
-                  </h2>
-                  <div className="bg-white rounded-3xl border-3 border-toon-border shadow-toon overflow-hidden group md:flex">
-                    <div className="relative h-48 md:h-64 md:w-1/2 overflow-hidden">
-                      <img 
-                        src={cocktail.pairing.image} 
-                        alt={cocktail.pairing.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                      <div className="absolute bottom-4 left-4">
-                        <h3 className="font-display text-3xl text-white tracking-wide drop-shadow-md">{cocktail.pairing.name}</h3>
-                      </div>
-                    </div>
-                    <div className="p-6 bg-yellow-50 md:w-1/2 flex items-center">
-                      <p className="font-bold text-gray-700 text-lg leading-relaxed">{cocktail.pairing.description}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+            <div className="max-w-4xl mx-auto px-6 -mt-8 relative z-10">
+              <div className="bg-white rounded-[2rem] border-3 border-toon-border shadow-toon p-6 md:p-10 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                <p className="text-xl text-gray-600 font-medium leading-relaxed mb-8 border-l-4 border-toon-accent pl-4 italic">
+                  "{cocktail.description}"
+                </p>
 
-              <div className="sticky bottom-6 md:static md:mt-12 md:mb-12">
-                <Button 
-                  fullWidth 
-                  onClick={() => navigate(`/prepare/${id}`)}
-                  className="flex items-center justify-center gap-3 text-xl py-4 md:max-w-md md:mx-auto md:hover:scale-105"
-                >
-                  <span>COMENZAR PREPARACIÓN</span>
-                  <span className="material-icons-round text-2xl">play_arrow</span>
-                </Button>
+                <h2 className="font-display text-3xl mb-6 flex items-center gap-3">
+                  <span className="material-icons-round text-toon-secondary">checklist_rtl</span>
+                  Ingredientes
+                </h2>
+                
+                <div className="grid gap-3 md:grid-cols-2">
+                  {cocktail.ingredients.map((ing, i) => (
+                    <div 
+                      key={ing.name} 
+                      onClick={() => toggleIngredient(ing.name)}
+                      className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 select-none ${
+                        checkedIngredients.includes(ing.name) 
+                          ? 'bg-green-50 border-green-400 opacity-50 scale-[0.98]' 
+                          : 'bg-white border-gray-100 hover:border-toon-secondary hover:shadow-md'
+                      }`}
+                    >
+                       <div className={`w-10 h-10 ${ing.color} rounded-full flex items-center justify-center border-2 border-toon-border mr-3`}>
+                         <span className="material-icons-round text-toon-dark text-lg">{ing.icon}</span>
+                       </div>
+                       <div className="flex-1">
+                         <div className="font-bold text-toon-dark">{ing.name}</div>
+                         <div className="text-xs font-bold text-toon-primary">{ing.amount}</div>
+                       </div>
+                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${checkedIngredients.includes(ing.name) ? 'bg-green-500 border-green-500' : 'border-gray-300'}`}>
+                         <span className="material-icons-round text-white text-xs opacity-100">check</span>
+                       </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8 mb-20">
+                 <Button 
+                   fullWidth 
+                   variant="primary"
+                   className="text-xl py-4 flex items-center justify-center gap-2 shadow-toon animate-bounce-slight"
+                   onClick={() => navigate(`/prepare/${id}`)}
+                 >
+                   <span>MODO PREPARACIÓN</span>
+                   <span className="material-icons-round">play_circle</span>
+                 </Button>
               </div>
             </div>
           </div>
         );
       };
 
-      // Prepare.tsx
       const Prepare = () => {
         const { id } = useParams();
         const navigate = useNavigate();
@@ -1357,98 +854,56 @@
         const isLastStep = currentStep === cocktail.steps.length - 1;
 
         const nextStep = () => {
-          if (isLastStep) {
-            navigate('/');
-          } else {
-            setCurrentStep(curr => curr + 1);
-          }
-        };
-
-        const prevStep = () => {
-          if (currentStep > 0) setCurrentStep(curr => curr - 1);
+          if (isLastStep) navigate('/');
+          else setCurrentStep(curr => curr + 1);
         };
 
         return (
-          <div className={`min-h-screen flex flex-col ${step.bgColor} transition-colors duration-500`}>
-            <div className="p-6 flex justify-between items-center">
-              <button onClick={() => navigate(-1)} className="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/40 transition-colors">
+          <div className={`min-h-screen flex flex-col ${step.bgColor} transition-colors duration-700 ease-in-out`}>
+            <div className="p-6 flex justify-between items-center z-20">
+              <button onClick={() => navigate(-1)} className="w-12 h-12 bg-white rounded-full border-3 border-toon-border shadow-sm hover:scale-110 transition-transform flex items-center justify-center">
                 <span className="material-icons-round text-toon-dark">close</span>
               </button>
-              <div className="font-display text-xl text-toon-dark uppercase tracking-widest">
-                {cocktail.name}
-              </div>
-              <div className="w-10 h-10 flex items-center justify-center font-bold bg-white rounded-full border-2 border-toon-border shadow-sm">
+              <div className="font-display text-2xl text-toon-dark">{cocktail.name}</div>
+              <div className="w-12 h-12 bg-toon-dark text-white rounded-full border-3 border-white shadow-sm flex items-center justify-center font-bold">
                 {currentStep + 1}/{cocktail.steps.length}
               </div>
             </div>
 
-            <div className="flex-1 flex flex-col items-center justify-center px-6 pb-24 max-w-md mx-auto w-full text-center">
-              
-              <div className="relative w-full aspect-square mb-8 group">
-                <div className="absolute inset-0 bg-white rounded-[3rem] border-4 border-toon-border transform rotate-3 transition-transform group-hover:rotate-6"></div>
-                <div className="absolute inset-0 bg-toon-dark rounded-[3rem] border-4 border-toon-border transform -rotate-2 opacity-10"></div>
-                <div className="relative w-full h-full rounded-[3rem] border-4 border-toon-border overflow-hidden shadow-toon bg-white">
-                  <img 
-                    src={step.image} 
-                    alt={step.title} 
-                    className="w-full h-full object-cover animate-bounce-slight"
-                  />
-                </div>
-                
-                <div className="absolute -bottom-6 -right-4 bg-toon-primary text-white font-display text-2xl px-6 py-2 rounded-full border-3 border-toon-border shadow-toon transform -rotate-12">
-                  {step.title}
-                </div>
-              </div>
+            <div className="flex-1 flex flex-col items-center justify-center px-6 relative overflow-hidden">
+               {/* Animated Background Elements */}
+               <div className="absolute top-1/4 left-10 w-20 h-20 bg-white opacity-20 rounded-full animate-bounce-slight" style={{ animationDuration: '3s' }}></div>
+               <div className="absolute bottom-1/3 right-10 w-32 h-32 bg-white opacity-20 rounded-full animate-bounce-slight" style={{ animationDuration: '4s' }}></div>
 
-              <h2 
-                key={currentStep}
-                className="font-display text-4xl mb-4 text-toon-dark drop-shadow-sm mt-4 uppercase animate-pop-bounce"
-              >
-                {step.title}
-              </h2>
-              
-              <p className="text-lg font-bold text-gray-700 bg-white/60 backdrop-blur-sm p-4 rounded-2xl border-2 border-white/50">
-                {step.description}
-              </p>
-
+               <div key={currentStep} className="w-full max-w-sm animate-pop-in relative z-10">
+                 <div className="aspect-square bg-white rounded-[2.5rem] border-4 border-toon-border shadow-toon p-3 rotate-2 mb-8">
+                   <img src={step.image} className="w-full h-full object-cover rounded-[2rem] border-2 border-gray-100" />
+                 </div>
+                 
+                 <div className="text-center">
+                   <h2 className="font-display text-5xl mb-4 text-toon-dark drop-shadow-sm">{step.title}</h2>
+                   <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border-3 border-toon-border shadow-sm inline-block">
+                     <p className="text-xl font-bold text-gray-800">{step.description}</p>
+                   </div>
+                 </div>
+               </div>
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t-3 border-toon-border rounded-t-[2.5rem] shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
-              <div className="flex gap-4 max-w-md mx-auto">
-                <Button 
-                  variant="outline" 
-                  onClick={prevStep} 
-                  disabled={currentStep === 0}
-                  className="flex-1"
-                >
-                  ATRÁS
-                </Button>
-                <Button 
-                  variant="primary" 
-                  onClick={nextStep} 
-                  className="flex-[2] flex items-center justify-center gap-2"
-                >
-                  <span>{isLastStep ? '¡TERMINAR!' : 'SIGUIENTE'}</span>
-                  <span className="material-icons-round">{isLastStep ? 'celebration' : 'arrow_forward'}</span>
-                </Button>
-              </div>
+            <div className="p-6 pb-10">
+               <div className="max-w-md mx-auto flex gap-4">
+                 <Button variant="outline" onClick={() => setCurrentStep(c => Math.max(0, c - 1))} disabled={currentStep === 0} className="flex-1">ATRÁS</Button>
+                 <Button variant="primary" onClick={nextStep} className="flex-[2] text-lg">{isLastStep ? '¡LISTO!' : 'SIGUIENTE'}</Button>
+               </div>
             </div>
           </div>
         );
       };
 
-      // --- APP ---
-
       const App = () => {
         return (
           <HashRouter>
             <Routes>
-              <Route path="/" element={
-                <>
-                  <Home />
-                  <NavBar />
-                </>
-              } />
+              <Route path="/" element={<><Home /><NavBar /></>} />
               <Route path="/recipe/:id" element={<Recipe />} />
               <Route path="/prepare/:id" element={<Prepare />} />
             </Routes>
@@ -1456,7 +911,6 @@
         );
       };
 
-      // --- RENDER ---
       const root = createRoot(document.getElementById('root'));
       root.render(<App />);
 
