@@ -22,7 +22,11 @@ export const CocktailCard: React.FC<{ cocktail: Cocktail }> = ({ cocktail }) => 
   };
 
   return (
-    <Link to={`/recipe/${cocktail.id}`} className="block group w-full max-w-[400px]">
+    <Link 
+      to={`/recipe/${cocktail.id}`}
+      state={{ fromApp: true }}
+      className="block group w-full max-w-[400px]"
+    >
       <article className="bg-white rounded-3xl border-3 border-toon-border shadow-toon overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:-translate-y-2 group-hover:scale-[1.02] group-hover:shadow-toon-hover">
         <div className="relative h-64 overflow-hidden bg-gray-100">
           <SmartImage 
@@ -34,7 +38,7 @@ export const CocktailCard: React.FC<{ cocktail: Cocktail }> = ({ cocktail }) => 
           <div className="absolute top-4 right-4 z-10">
             <button 
               onClick={handleLike}
-              className={`p-2 rounded-full border-2 border-toon-border shadow-sm transition-all active:scale-90 ${liked ? 'bg-toon-primary' : 'bg-white hover:bg-red-50'}`}
+              className={`w-12 h-12 flex items-center justify-center rounded-full border-2 border-toon-border shadow-sm transition-all active:scale-90 ${liked ? 'bg-toon-primary' : 'bg-white hover:bg-red-50'}`}
             >
               <span className={`material-icons-round text-xl ${liked ? 'text-white animate-heart-burst' : 'text-toon-primary'}`}>
                 {liked ? 'favorite' : 'favorite_border'}

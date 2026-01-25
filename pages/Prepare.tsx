@@ -5,8 +5,9 @@ import { Button } from '../components/Button';
 import { SmartImage } from '../components/SmartImage';
 
 export const Prepare: React.FC = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  
   const cocktail = COCKTAILS.find(c => c.id === id);
   const [currentStep, setCurrentStep] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -75,13 +76,13 @@ export const Prepare: React.FC = () => {
     <div className={`min-h-screen flex flex-col ${step.bgColor} transition-colors duration-500`}>
       {/* Header */}
       <div className="p-6 flex justify-between items-center">
-        <button onClick={() => navigate(-1)} className="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/40 transition-colors border border-white/30">
-          <span className="material-icons-round text-toon-dark">close</span>
+        <button onClick={() => navigate(-1)} className="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/40 transition-colors border border-white/30 active:scale-95">
+          <span className="material-icons-round text-toon-dark text-2xl">close</span>
         </button>
         <div className="font-display text-xl text-toon-dark uppercase tracking-widest bg-white/30 px-4 py-1 rounded-full backdrop-blur-sm">
           {cocktail.name}
         </div>
-        <div className="w-10 h-10 flex items-center justify-center font-bold bg-white rounded-full border-2 border-toon-border shadow-sm">
+        <div className="w-12 h-12 flex items-center justify-center font-bold bg-white rounded-full border-2 border-toon-border shadow-sm">
           {currentStep + 1}/{cocktail.steps.length}
         </div>
       </div>
@@ -110,7 +111,7 @@ export const Prepare: React.FC = () => {
 
         <h2 
           key={currentStep}
-          className="font-display text-4xl mb-4 text-toon-dark drop-shadow-sm mt-4 uppercase animate-pop-in"
+          className="font-display text-4xl mb-4 text-toon-dark drop-shadow-sm mt-4 uppercase animate-wiggle"
         >
           {step.title}
         </h2>

@@ -1,0 +1,17 @@
+
+{
+  "name": "Toon Bar - Fractal Edition",
+  "short_name": "Toon Bar",
+  "description": "Tu bar personal estilo Cartoon",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFF5F5",
+  "theme_color": "#FF6B6B",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=192&h=192",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

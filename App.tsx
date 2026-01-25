@@ -5,37 +5,32 @@ import { Recipe } from './pages/Recipe';
 import { Prepare } from './pages/Prepare';
 import { Favorites } from './pages/Favorites';
 import { NavBar } from './components/NavBar';
-import { AssetProvider } from './context/AssetContext';
 
 const AppContent: React.FC = () => {
   return (
-    <>
-      <Routes>
-        <Route path="/" element={
-          <>
-            <Home />
-            <NavBar />
-          </>
-        } />
-        <Route path="/favorites" element={
-          <>
-            <Favorites />
-            <NavBar />
-          </>
-        } />
-        <Route path="/recipe/:id" element={<Recipe />} />
-        <Route path="/prepare/:id" element={<Prepare />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={
+        <>
+          <Home />
+          <NavBar />
+        </>
+      } />
+      <Route path="/favorites" element={
+        <>
+          <Favorites />
+          <NavBar />
+        </>
+      } />
+      <Route path="/recipe/:id" element={<Recipe />} />
+      <Route path="/prepare/:id" element={<Prepare />} />
+    </Routes>
   );
 };
 
 export default function App() {
   return (
-    <AssetProvider>
-      <HashRouter>
-        <AppContent />
-      </HashRouter>
-    </AssetProvider>
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
   );
 }
